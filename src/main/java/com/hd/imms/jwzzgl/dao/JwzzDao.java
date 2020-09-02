@@ -33,4 +33,19 @@ public class JwzzDao {
         }
         return map;
     }
+
+    /**
+     * 查询病患PACS影像报告
+     * @param medical_record_id
+     * @param emergency_id
+     * @return
+     */
+    public Map<String, Object> queryPatientPACSinfo(String medical_record_id, String emergency_id){
+        Map<String, Object> map = new HashMap<String, Object>();
+        String sql = "select * from v_jwzzgl_hzyxbg t where t.medical_record_id=?";
+        Object[] args = new Object[1];
+        args[0] = medical_record_id;
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
+        return map;
+    }
 }

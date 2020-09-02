@@ -14,11 +14,11 @@ public class JwzzService {
     private JwzzDao jwzzDao;
     public Map<String, Object> getPatientInfo(String certificate_type, String id_no){
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("msg",200);
+        map.put("msg",201);
         try{
-            map.put("contnet", jwzzDao.getPatientInfo(certificate_type, id_no));
+            map.put("respData", jwzzDao.getPatientInfo(certificate_type, id_no));
         } catch (Exception e){
-            map.put("msg",201);
+            map.put("msg",302);     //302数据异常
             map.put("content",e.getMessage());
         }
         return map;
