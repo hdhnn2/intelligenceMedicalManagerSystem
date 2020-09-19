@@ -22,8 +22,15 @@ public class JwzzController {
     @RequestMapping(value="/QueryPatientVitalSigns", method = RequestMethod.GET)
     public Object QueryPatientVitalSigns(@RequestParam(value="medical_record_id",required = true) String medical_record_id,
                                        @RequestParam(value="emergency_id",required = true) String emergency_id){
-        System.out.println("queryPatientBaseInfo medical_record_id:"+medical_record_id);
-        Map<String, Object> map = jwzzService.getPatientInfo(medical_record_id, emergency_id);
+        System.out.println("queryPatientBaseInfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
+        Map<String, Object> map = jwzzService.queryPatientPACSinfo(medical_record_id, emergency_id);
+        return map;
+    }
+    @RequestMapping(value="/QueryPatientPACSinfo", method = RequestMethod.POST)
+    public Object queryPatientPACSinfo(@RequestParam(value="medical_record_id",required = true) String medical_record_id,
+                                         @RequestParam(value="emergency_id",required = true) String emergency_id){
+        System.out.println("queryPatientBaseInfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
+        Map<String, Object> map = jwzzService.queryPatientPACSinfo(medical_record_id, emergency_id);
         return map;
     }
 }

@@ -40,12 +40,12 @@ public class JwzzDao {
      * @param emergency_id
      * @return
      */
-    public Map<String, Object> queryPatientPACSinfo(String medical_record_id, String emergency_id){
-        Map<String, Object> map = new HashMap<String, Object>();
-        String sql = "select * from v_jwzzgl_hzyxbg t where t.medical_record_id=?";
-        Object[] args = new Object[1];
+    public List<Map<String, Object>> queryPatientPACSinfo(String medical_record_id, String emergency_id){
+        String sql = "select * from v_jwzzgl_hzyxbg t where t.medical_record_id=? and emergency_id=?";
+        Object[] args = new Object[2];
         args[0] = medical_record_id;
+        args[1] = emergency_id;
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
-        return map;
+        return list;
     }
 }
