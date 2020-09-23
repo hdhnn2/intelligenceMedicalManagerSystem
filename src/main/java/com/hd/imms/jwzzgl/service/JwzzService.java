@@ -43,4 +43,42 @@ public class JwzzService {
         }
         return map;
     }
+
+    /**
+     * 查询病患生命体征信息
+     * @param medical_record_id
+     * @param emergency_id
+     * @return
+     */
+    public Map<String, Object> queryPatientVitalSigns(String medical_record_id, String emergency_id){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("msg",201);
+        try{
+            List<Map<String, Object>> list = jwzzDao.queryPatientVitalSigns(medical_record_id, emergency_id);
+            map.put("respData",list);
+        } catch (Exception e){
+            map.put("msg",302);     //302数据异常
+            map.put("content",e.getMessage());
+        }
+        return map;
+    }
+
+    /**
+     * 获取检验检查结果
+     * @param medical_record_id
+     * @param emergency_id
+     * @return
+     */
+    public Map<String, Object> queryLisInfo(String medical_record_id, String emergency_id){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("msg",201);
+        try{
+            List<Map<String, Object>> list = jwzzDao.queryLisInfo(medical_record_id, emergency_id);
+            map.put("respData",list);
+        } catch (Exception e){
+            map.put("msg",302);     //302数据异常
+            map.put("content",e.getMessage());
+        }
+        return map;
+    }
 }

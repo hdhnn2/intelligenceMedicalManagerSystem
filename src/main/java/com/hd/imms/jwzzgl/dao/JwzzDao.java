@@ -48,4 +48,34 @@ public class JwzzDao {
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
         return list;
     }
+
+    /**
+     * 查询病患生命体征信息
+     * @param medical_record_id
+     * @param emergency_id
+     * @return
+     */
+    public List<Map<String, Object>> queryPatientVitalSigns(String medical_record_id, String emergency_id){
+        String sql = "select * from v_jwzzgl_smtzxx t where t.medical_record_id=? and emergency_id=?";
+        Object[] args = new Object[2];
+        args[0] = medical_record_id;
+        args[1] = emergency_id;
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
+        return list;
+    }
+
+    /**
+     * 获取检验检查结果
+     * @param medical_record_id
+     * @param emergency_id
+     * @return
+     */
+    public List<Map<String, Object>> queryLisInfo(String medical_record_id, String emergency_id){
+        String sql = "select * from v_jwzzgl_lis t where t.medical_record_id=? and emergency_id=?";
+        Object[] args = new Object[2];
+        args[0] = medical_record_id;
+        args[1] = emergency_id;
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
+        return list;
+    }
 }
