@@ -19,32 +19,41 @@ public class JwzzController {
         Map<String, Object> map = jwzzService.getPatientInfo(certificate_type, id_no);
         return map;
     }
-    @RequestMapping(value="/QueryPatientVitalSigns", method = RequestMethod.GET)
-    public Object QueryPatientVitalSigns(@RequestParam(value="medical_record_id",required = true) String medical_record_id,
-                                       @RequestParam(value="emergency_id",required = true) String emergency_id){
+
+    @RequestMapping(value="/CreatPatient", method = RequestMethod.POST)
+    public Object creatPatient(@RequestParam(value="name",required = true) String name,
+                                       @RequestParam(value="gender",required = true) String gender,
+                               @RequestParam(value="ageValue",required = true) String ageValue,
+                               @RequestParam(value="certificate_type",required = true) String certificateType,
+                               @RequestParam(value="id_no",required = true) String idNo){
+        //调用his系统进行挂号
+        System.out.println("creatPatient name:"+name+" gender:"+gender+" ageValue:"+ageValue
+                +" certificate_type:"+certificateType+" id_no="+idNo);
+        Map<String, Object> map = new HashMap<>();
+        return map;
+    }
+    @RequestMapping(value="/QueryPatientVitalSigns", method = RequestMethod.POST)
+    public Object queryPatientVitalSigns(@RequestParam(value="medical_record_id",required = true) String medical_record_id,
+                                         @RequestParam(value="emergency_id",required = true) String emergency_id){
+        //查询同步病患生命体征信息
         System.out.println("queryPatientBaseInfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
-        Map<String, Object> map = jwzzService.queryPatientPACSinfo(medical_record_id, emergency_id);
+        Map<String, Object> map = jwzzService.queryPatientVitalSigns(medical_record_id, emergency_id);
         return map;
     }
     @RequestMapping(value="/QueryPatientPACSinfo", method = RequestMethod.POST)
     public Object queryPatientPACSinfo(@RequestParam(value="medical_record_id",required = true) String medical_record_id,
                                          @RequestParam(value="emergency_id",required = true) String emergency_id){
-        System.out.println("queryPatientBaseInfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
+        //查询病患PACS影像报告
+        System.out.println("QueryPatientPACSinfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
         Map<String, Object> map = jwzzService.queryPatientPACSinfo(medical_record_id, emergency_id);
         return map;
     }
 
-    @RequestMapping(value="/QueryPatientVitalSigns", method = RequestMethod.POST)
-    public Object queryPatientVitalSigns(@RequestParam(value="medical_record_id",required = true) String medical_record_id,
-                                       @RequestParam(value="emergency_id",required = true) String emergency_id){
-        System.out.println("queryPatientBaseInfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
-        Map<String, Object> map = jwzzService.queryPatientVitalSigns(medical_record_id, emergency_id);
-        return map;
-    }
 
     @RequestMapping(value="/QueryLisInfo", method = RequestMethod.POST)
     public Object queryLisInfo(@RequestParam(value="medical_record_id",required = true) String medical_record_id,
                                        @RequestParam(value="emergency_id",required = true) String emergency_id){
+        //检验检查结果信息
         System.out.println("queryPatientBaseInfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
         Map<String, Object> map = jwzzService.queryLisInfo(medical_record_id, emergency_id);
         return map;
