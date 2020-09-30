@@ -2,6 +2,7 @@ package com.hd.imms.jwzzgl.dao;
 
 import com.hd.imms.jwzzgl.entity.PatientBaseInfo;
 import com.hd.imms.jwzzgl.entity.PatientBaseInfoRowMap;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,10 +42,9 @@ public class JwzzDao {
      * @return
      */
     public List<Map<String, Object>> queryPatientPACSinfo(String medical_record_id, String emergency_id){
-        String sql = "select * from v_jwzzgl_hzyxbg t where t.medical_record_id=? and emergency_id=?";
-        Object[] args = new Object[2];
-        args[0] = medical_record_id;
-        args[1] = emergency_id;
+        String sql = "select * from v_jwzzgl_hzyxbg t where t.medical_record_id=? ";
+        Object[] args = new Object[1];
+        args[0] = StringUtils.isNotEmpty(medical_record_id) ? medical_record_id : emergency_id;
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
         return list;
     }
@@ -56,10 +56,9 @@ public class JwzzDao {
      * @return
      */
     public List<Map<String, Object>> queryPatientVitalSigns(String medical_record_id, String emergency_id){
-        String sql = "select * from v_jwzzgl_smtzxx t where t.medical_record_id=? and emergency_id=?";
-        Object[] args = new Object[2];
-        args[0] = medical_record_id;
-        args[1] = emergency_id;
+        String sql = "select * from v_jwzzgl_smtzxx t where t.medical_record_id=? ";
+        Object[] args = new Object[1];
+        args[0] = StringUtils.isNotEmpty(medical_record_id) ? medical_record_id : emergency_id;
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
         return list;
     }
@@ -71,10 +70,9 @@ public class JwzzDao {
      * @return
      */
     public List<Map<String, Object>> queryLisInfo(String medical_record_id, String emergency_id){
-        String sql = "select * from v_jwzzgl_lis t where t.medical_record_id=? and emergency_id=?";
-        Object[] args = new Object[2];
-        args[0] = medical_record_id;
-        args[1] = emergency_id;
+        String sql = "select * from v_jwzzgl_lis t where t.medical_record_id=? ";
+        Object[] args = new Object[1];
+        args[0] = StringUtils.isNotEmpty(medical_record_id) ? medical_record_id : emergency_id;
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
         return list;
     }

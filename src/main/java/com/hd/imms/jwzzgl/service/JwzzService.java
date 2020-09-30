@@ -55,7 +55,8 @@ public class JwzzService {
         map.put("msg",201);
         try{
             List<Map<String, Object>> list = jwzzDao.queryPatientVitalSigns(medical_record_id, emergency_id);
-            map.put("respData",list);
+            //生命体征只要一条记录2020-09-30
+            map.put("respData",list != null && list.size() >0 ? list.get(0) : "");
         } catch (Exception e){
             map.put("msg",302);     //302数据异常
             map.put("content",e.getMessage());
