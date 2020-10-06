@@ -76,4 +76,18 @@ public class JwzzDao {
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
         return list;
     }
+
+    /**
+     * 获取院内救治信息
+     * @param medical_record_id
+     * @param emergency_id
+     * @return
+     */
+    public List<Map<String, Object>> queryInHospitalInfo(String medical_record_id, String emergency_id){
+        String sql = "select * from v_jwzzgl_zgxxtb t where t.medical_record_id=? ";
+        Object[] args = new Object[1];
+        args[0] = StringUtils.isNotEmpty(medical_record_id) ? medical_record_id : emergency_id;
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
+        return list;
+    }
 }

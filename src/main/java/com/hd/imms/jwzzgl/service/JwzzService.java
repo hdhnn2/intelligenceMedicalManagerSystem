@@ -82,4 +82,23 @@ public class JwzzService {
         }
         return map;
     }
+
+    /**
+     * 获取院内救治信息
+     * @param medical_record_id
+     * @param emergency_id
+     * @return
+     */
+    public Map<String, Object> queryInHospitalInfo(String medical_record_id, String emergency_id){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("msg",201);
+        try{
+            List<Map<String, Object>> list = jwzzDao.queryInHospitalInfo(medical_record_id, emergency_id);
+            map.put("respData",list);
+        } catch (Exception e){
+            map.put("msg",302);     //302数据异常
+            map.put("content",e.getMessage());
+        }
+        return map;
+    }
 }

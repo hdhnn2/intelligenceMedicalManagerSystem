@@ -61,4 +61,13 @@ public class JwzzController {
         Map<String, Object> map = jwzzService.queryLisInfo(medical_record_id, emergency_id);
         return map;
     }
+    @RequestMapping(value="/CreatPatientCpc", method = RequestMethod.POST)
+    public Object queryInHospitalInfo(@RequestParam(value="medical_record_id") String medical_record_id,
+                               @RequestParam(value="emergency_id") String emergency_id){
+        //获取胸痛中心需要的院内救治信息，用于胸痛中心数据上报
+        log.error("queryInHospitalInfo medical_record_id:"+medical_record_id+" emergency_id:"+emergency_id);
+        Map<String, Object> map = jwzzService.queryInHospitalInfo(medical_record_id, emergency_id);
+        log.debug("queryInHospitalInfo result:"+map.toString());
+        return map;
+    }
 }
