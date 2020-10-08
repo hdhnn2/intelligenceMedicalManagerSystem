@@ -124,7 +124,7 @@ public class JwzzDao {
                 cs.setString(5, idNo);
                 cs.registerOutParameter(6, OracleTypes.VARCHAR);
                 cs.registerOutParameter(7, OracleTypes.VARCHAR);
-                return null;
+                return cs;
             }
         }, new CallableStatementCallback() {
 

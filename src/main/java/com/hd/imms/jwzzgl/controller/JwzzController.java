@@ -39,7 +39,8 @@ public class JwzzController {
         map.put("certificateType", certificateType);
         map.put("idNo", idNo);
         Map<String, Object> retMap = jwzzService.createPatient(map);
-        return map;
+        log.error("creatPatient over name:"+name+", medical_record_id:"+retMap.get("medical_record_id"));
+        return retMap;
     }
     @RequestMapping(value="/QueryPatientVitalSigns", method = RequestMethod.POST)
     public Object queryPatientVitalSigns(@RequestParam(value="medical_record_id") String medical_record_id,
