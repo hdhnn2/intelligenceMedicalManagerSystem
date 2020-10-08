@@ -33,6 +33,12 @@ public class JwzzController {
         log.error("creatPatient name:"+name+" gender:"+gender+" ageValue:"+ageValue
                 +" certificate_type:"+certificateType+" id_no="+idNo);
         Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("gender", gender);
+        map.put("ageValue", ageValue);
+        map.put("certificateType", certificateType);
+        map.put("idNo", idNo);
+        Map<String, Object> retMap = jwzzService.createPatient(map);
         return map;
     }
     @RequestMapping(value="/QueryPatientVitalSigns", method = RequestMethod.POST)

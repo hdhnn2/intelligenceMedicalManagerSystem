@@ -110,8 +110,8 @@ public class JwzzDao {
         String name = csMap.get("name").toString();
         String gender = csMap.get("gender").toString();
         String age = csMap.get("ageValue").toString();
-        String certificateType = csMap.get("certificate_type").toString();
-        String id_no = csMap.get("id_no").toString();
+        String certificateType = csMap.get("certificateType").toString();
+        String idNo = csMap.get("idNo").toString();
         jdbcTemplate.execute(new CallableStatementCreator() {
             @Override
             public CallableStatement createCallableStatement(Connection connection) throws SQLException {
@@ -121,7 +121,7 @@ public class JwzzDao {
                 cs.setString(2, gender);
                 cs.setString(3, age);
                 cs.setString(4, certificateType);
-                cs.setString(5, id_no);
+                cs.setString(5, idNo);
                 cs.registerOutParameter(6, OracleTypes.VARCHAR);
                 cs.registerOutParameter(7, OracleTypes.VARCHAR);
                 return null;
