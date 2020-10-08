@@ -2,6 +2,7 @@ package com.hd.imms.jwzzgl.service;
 
 import com.hd.imms.jwzzgl.dao.JwzzDao;
 import com.hd.imms.jwzzgl.entity.PatientBaseInfo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -99,6 +100,34 @@ public class JwzzService {
             map.put("msg",302);     //302数据异常
             map.put("content",e.getMessage());
         }
+        return map;
+    }
+
+    /**
+     * 快速挂号
+     * @param csMap
+     * @return
+     */
+    public Map<String, Object> createPatient(Map<String,Object> csMap){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("msg",201);
+        try{
+            Map<String, String> retMap = jwzzDao.createPatient(csMap);
+            if(!StringUtils.equals(retMap.get("result"),"1")){
+                //1正常其它为异常
+                map.put("msg",302);     //302数据异常
+            }
+            map.put("respData",retMap);
+        } catch (Exception e){
+            map.put("msg",302);     //302数据异常
+            map.put("content",e.getMessage());
+        }
+        return map;
+    }
+    private Map<String, String> convertCreateCardName(Map<String, String> retMap){
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("medical_record_id", retMap.get("medicalRecordId"));
+        map.put("emergency_id", retMap.get("emergencyId"));
         return map;
     }
 }
