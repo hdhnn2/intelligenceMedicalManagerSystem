@@ -28,19 +28,24 @@ public class JwzzService {
 
     /**
      * 查询病患PACS影像报告
-     * @param certificate_type
-     * @param id_no
+     * @param medical_record_id
+     * @param emergency_id
      * @return
      */
-    public Map<String, Object> queryPatientPACSinfo(String certificate_type, String id_no){
+    public Map<String, Object> queryPatientPACSinfo(String medical_record_id, String emergency_id){
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("msg",201);
-        try{
-            List<Map<String, Object>> list = jwzzDao.queryPatientPACSinfo(certificate_type, id_no);
-            map.put("respData",list);
-        } catch (Exception e){
+        if(StringUtils.isEmpty(medical_record_id) && StringUtils.isEmpty(emergency_id)){
             map.put("msg",302);     //302数据异常
-            map.put("content",e.getMessage());
+            map.put("content","参数都为空");
+        }else {
+            try {
+                List<Map<String, Object>> list = jwzzDao.queryPatientPACSinfo(medical_record_id, emergency_id);
+                map.put("respData", list);
+            } catch (Exception e) {
+                map.put("msg", 302);     //302数据异常
+                map.put("content", e.getMessage());
+            }
         }
         return map;
     }
@@ -54,13 +59,18 @@ public class JwzzService {
     public Map<String, Object> queryPatientVitalSigns(String medical_record_id, String emergency_id){
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("msg",201);
-        try{
-            List<Map<String, Object>> list = jwzzDao.queryPatientVitalSigns(medical_record_id, emergency_id);
-            //生命体征只要一条记录2020-09-30
-            map.put("respData",list != null && list.size() >0 ? list.get(0) : "");
-        } catch (Exception e){
+        if(StringUtils.isEmpty(medical_record_id) && StringUtils.isEmpty(emergency_id)){
             map.put("msg",302);     //302数据异常
-            map.put("content",e.getMessage());
+            map.put("content","参数都为空");
+        }else {
+            try {
+                List<Map<String, Object>> list = jwzzDao.queryPatientVitalSigns(medical_record_id, emergency_id);
+                //生命体征只要一条记录2020-09-30
+                map.put("respData", list != null && list.size() > 0 ? list.get(0) : "");
+            } catch (Exception e) {
+                map.put("msg", 302);     //302数据异常
+                map.put("content", e.getMessage());
+            }
         }
         return map;
     }
@@ -74,12 +84,17 @@ public class JwzzService {
     public Map<String, Object> queryLisInfo(String medical_record_id, String emergency_id){
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("msg",201);
-        try{
-            List<Map<String, Object>> list = jwzzDao.queryLisInfo(medical_record_id, emergency_id);
-            map.put("respData",list);
-        } catch (Exception e){
+        if(StringUtils.isEmpty(medical_record_id) && StringUtils.isEmpty(emergency_id)){
             map.put("msg",302);     //302数据异常
-            map.put("content",e.getMessage());
+            map.put("content","参数都为空");
+        }else {
+            try {
+                List<Map<String, Object>> list = jwzzDao.queryLisInfo(medical_record_id, emergency_id);
+                map.put("respData", list);
+            } catch (Exception e) {
+                map.put("msg", 302);     //302数据异常
+                map.put("content", e.getMessage());
+            }
         }
         return map;
     }
@@ -93,12 +108,17 @@ public class JwzzService {
     public Map<String, Object> queryInHospitalInfo(String medical_record_id, String emergency_id){
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("msg",201);
-        try{
-            List<Map<String, Object>> list = jwzzDao.queryInHospitalInfo(medical_record_id, emergency_id);
-            map.put("respData",list);
-        } catch (Exception e){
+        if(StringUtils.isEmpty(medical_record_id) && StringUtils.isEmpty(emergency_id)){
             map.put("msg",302);     //302数据异常
-            map.put("content",e.getMessage());
+            map.put("content","参数都为空");
+        }else{
+            try{
+                List<Map<String, Object>> list = jwzzDao.queryInHospitalInfo(medical_record_id, emergency_id);
+                map.put("respData",list);
+            } catch (Exception e){
+                map.put("msg",302);     //302数据异常
+                map.put("content",e.getMessage());
+            }
         }
         return map;
     }
