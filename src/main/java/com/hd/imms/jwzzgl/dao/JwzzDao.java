@@ -141,4 +141,17 @@ public class JwzzDao {
         });
         return retMap;
     }
+
+    /**
+     * 获取检验检查结果
+     * @param sqbh
+     * @return
+     */
+    public List<Map<String, Object>> queryLisResult(String sqbh){
+        String sql = "select * from v_jwzzgl_lis_detail t where t.CA_SERIAL_NO=? ";
+        Object[] args = new Object[1];
+        args[0] = sqbh;
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, sqbh);
+        return list;
+    }
 }

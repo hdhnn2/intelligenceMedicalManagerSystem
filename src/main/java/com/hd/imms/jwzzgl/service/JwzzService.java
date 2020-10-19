@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +90,20 @@ public class JwzzService {
             map.put("content","参数都为空");
         }else {
             try {
-                List<Map<String, Object>> list = jwzzDao.queryLisInfo(medical_record_id, emergency_id);
-                map.put("respData", list);
+                //检验申请信息
+                List<Map<String, Object>> jysqList = jwzzDao.queryLisInfo(medical_record_id, emergency_id);
+                //检验结果信息
+                List<String> sqdhList = new ArrayList<>();
+                if(jysqList != null && jysqList.size() > 0){
+                    for(Map<String, Object> tmap : jysqList){
+                        String sqbh = tmap.get("CA_SERIAL_NO").toString();
+                        List<Map<String, Object>> jyjgList = jwzzDao.queryLisResult(sqbh);
+                        //检验申请和检验结果按文档拼装
+                        tmap.put("ca_item_details", jyjgList);
+                    }
+                }
+
+                map.put("respData", jysqList);
             } catch (Exception e) {
                 map.put("msg", 302);     //302数据异常
                 map.put("content", e.getMessage());
