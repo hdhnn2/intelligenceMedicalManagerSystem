@@ -30,8 +30,10 @@ public class JwzzDao {
         StringBuffer sql = new StringBuffer("select * from v_jwzzgl_hzjbxx t where ");
         if(StringUtils.equals(certificate_type, "1")){
             sql.append("t.jzkh=?");
-        }else{
+        }else if(StringUtils.equals(certificate_type, "4")){
             sql.append("t.card_no=?");
+        }else{
+            sql.append("t.medical_record_id=?");
         }
         Object[] args = new Object[1];
         args[0] = id_no;
