@@ -27,10 +27,15 @@ public class JwzzDao {
     JdbcTemplate jdbcTemplate;
     public Map<String, Object> getPatientInfo(String certificate_type, String id_no){
         Map<String, Object> map = new HashMap<String, Object>();
-        String sql = "select * from v_jwzzgl_hzjbxx t where t.card_no=?";
+        StringBuffer sql = new StringBuffer("select * from v_jwzzgl_hzjbxx t where ");
+        if(StringUtils.equals(certificate_type, "1")){
+            sql.append("t.jzkh=?");
+        }else{
+            sql.append("t.card_no=?");
+        }
         Object[] args = new Object[1];
         args[0] = id_no;
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql.toString(), args);
         if(list != null){
             Map<String, Object> tmap = list.get(0);
             map.put("name",tmap.get("NAME"));
@@ -148,7 +153,7 @@ public class JwzzDao {
      * @return
      */
     public List<Map<String, Object>> queryLisResult(String sqbh){
-        String sql = "select * from v_jwzzgl_lis_detail t where t.CA_SERIAL_NO=? ";
+        String sql = "select ITEMCODE,ITEMNAME,ITEMVALUE,ITEMUNIT,REFERENCEVALUE from v_jwzzgl_lis_detail t where t.CA_SERIAL_NO=? ";
         Object[] args = new Object[1];
         args[0] = sqbh;
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, sqbh);
