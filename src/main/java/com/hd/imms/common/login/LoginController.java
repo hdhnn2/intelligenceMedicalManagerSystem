@@ -3,6 +3,7 @@ package com.hd.imms.common.login;
 import com.hd.imms.common.security.JwtAuthenticatioToken;
 import com.hd.imms.common.utils.HttpResult;
 import com.hd.imms.common.utils.SecurityUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
+@Slf4j
 public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -24,10 +26,11 @@ public class LoginController {
     public HttpResult login(@RequestBody LoginBean loginBean, HttpServletRequest request) throws IOException {
         String username = loginBean.getUsername();
         String password = loginBean.getPassword();
-
+        log.error("login username: "+username+", password: "+password);
         // 系统登录认证
         JwtAuthenticatioToken token = SecurityUtils.login(request, username, password, authenticationManager);
 
+        log.error("login token: "+token.toString());
         return HttpResult.ok(token);
     }
 }
