@@ -24,6 +24,7 @@ public class JwtAuthenticationProvider extends DaoAuthenticationProvider {
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
         // 可以在此处覆写密码验证逻辑
+
         super.additionalAuthenticationChecks(userDetails, authentication);
     }
 }
