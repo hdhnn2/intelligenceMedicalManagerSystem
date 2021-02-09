@@ -1,6 +1,7 @@
 package com.hd.imms.common.schedule.service;
 
 import com.hd.imms.common.schedule.Dao.CommonDao;
+import com.hd.imms.common.schedule.Dao.LisDao;
 import com.hd.imms.common.utils.EncryptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,8 @@ import java.util.Map;
 public class CommonService {
     @Autowired
     CommonDao commonDao;
-
+    @Autowired
+    LisDao lisDao;
     /**
      * 核酸检查信息上传
      * @date 2021-02-07
@@ -33,10 +35,21 @@ public class CommonService {
                     System.err.println("before encrypt  content: "+content);
                     // 加密数据, 返回密文
                     byte[] cipherBytes = EncryptionUtils.encrypt(content.getBytes(), key.getBytes());
+                    System.out.println("encrypt  content"+new String(cipherBytes));
                     // 解密数据, 返回明文
                     byte[] plainBytes = EncryptionUtils.decrypt(cipherBytes, key.getBytes());
                     // 输出解密后的明文
                     System.out.println("decryption"+new String(plainBytes));
+                }
+
+            }
+        }
+        List<Map<String, Object>> list1 = lisDao.cxhsjcxx();
+        if(list1 != null){
+            for(Map<String, Object> map : list1){
+                for(Map.Entry<String, Object> entry : map.entrySet()){
+                    String content = entry.getValue().toString();
+                    System.err.println("lis map key: " + entry.getKey()+",  value: "+entry.getValue());;
                 }
 
             }

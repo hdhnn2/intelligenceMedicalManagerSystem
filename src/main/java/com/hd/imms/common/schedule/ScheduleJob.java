@@ -32,7 +32,7 @@ public class ScheduleJob {
      * 日期：2021-02-07
      * 作者：hnn
      */
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/3 * * * ?")
     private void hsjcxxsc(){
         log.info("hsjcxxsc start:"+new Date());
         try {

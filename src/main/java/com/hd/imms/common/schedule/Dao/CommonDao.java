@@ -16,14 +16,14 @@ import java.util.Map;
 @Repository
 public class CommonDao {
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    JdbcTemplate ds1JdbcTemplate;
     /**
      * 核酸检测信息
      * @return
      */
     public List<Map<String, Object>> cxhsjcxx(){
         String sql = "select t.dept_name from dept_dict t where dept_code='010101' ";
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> list = ds1JdbcTemplate.queryForList(sql);
         return list;
     }
 }
