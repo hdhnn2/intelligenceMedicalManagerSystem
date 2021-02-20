@@ -1,7 +1,8 @@
-package com.hd.imms.common.login;
+package com.hd.imms.common.authorize.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hd.imms.common.authorize.bean.LoginBean;
 import com.hd.imms.common.security.JwtAuthenticatioToken;
 import com.hd.imms.common.utils.HttpResult;
 import com.hd.imms.common.utils.SecurityUtils;

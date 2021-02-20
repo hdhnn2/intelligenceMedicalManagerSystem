@@ -1,10 +1,12 @@
 package com.hd.imms.common.schedule.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hd.imms.common.schedule.Dao.CommonDao;
 import com.hd.imms.common.schedule.Dao.LisDao;
 import com.hd.imms.common.utils.EncryptionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +24,23 @@ import java.util.Set;
 public class CommonService {
     @Autowired
     CommonDao commonDao;
-    @Autowired
-    LisDao lisDao;
     /**
      * 核酸检查信息上传
      * @date 2021-02-07
      */
     public void hsjcxxsc() throws Exception {
         String key = "1234";
-        //查询当天已上传成功单号
+        //查询当天未上传
         List<Map<String, Object>> list = commonDao.cxhsjcxx();
         if(list != null){
             for(Map<String, Object> map : list){
-                JSONObject json = this.convMapToJSON(map);
+                JSONObject paraJSON = this.convMapToJSON(map);
+                JSONObject retJSON = JSON.parseObject(this.sendHsjcPost("", paraJSON.toJSONString()));
+                //上传成功，更新中间表
+                if(StringUtils.equals("0", retJSON.getString("code"))){
+                    String sqbh = (String)map.get("remark");
+                    commonDao.updateUploadInfo(sqbh);
+                }
             }
         }
     }
@@ -42,7 +48,7 @@ public class CommonService {
      * 发送核酸检查信息
      * @date 2021-02-07
      */
-    public static String sendHsjcPost(String url, String query) {
+    public String sendHsjcPost(String url, String query) {
         BufferedReader br = null;
         String result = "";
         StringBuffer buffer = new StringBuffer();

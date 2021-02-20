@@ -1,4 +1,4 @@
-package com.hd.imms.common.login;
+package com.hd.imms.common.authorize.bean;
 
 public class LoginBean {
 
