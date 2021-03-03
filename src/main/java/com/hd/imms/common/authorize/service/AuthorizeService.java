@@ -17,4 +17,29 @@ public class AuthorizeService {
         return roleList;
     }
 
+    /**
+     * 创建角色
+     * @return
+     */
+    public String createRole(Role role){
+        String msg =authorizeDao.createRole(role);
+        return msg;
+    }
+
+    /**
+     * 更新角色
+     * @return
+     */
+    public String updateRole(Role role){
+        String msg =authorizeDao.updateRole(role);
+        return msg;
+    }
+
+    /**
+     * 删除角色
+     * @return
+     */
+    public String deleteRole(String roleCode){
+        return authorizeDao.deleteRole(roleCode);
+    }
 }

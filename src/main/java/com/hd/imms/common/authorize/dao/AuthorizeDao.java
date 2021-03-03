@@ -34,4 +34,47 @@ public class AuthorizeDao {
                 });
         return list;
     }
+    /**
+     * 新建角色
+     * @return
+     */
+    public String createRole(Role role){
+        String sql = "insert into AUTH_ROLE (role_code, role_name) values (?,?) ";
+        Object[ ] args = {role.getRoleCode(), role.getRoleName()};
+        int cnt = ds1JdbcTemplate.update(sql, args);
+        if (cnt == 1){
+            return "";
+        }else{
+            return "err";
+        }
+    }
+    /**
+     * 更新角色
+     * @return
+     */
+    public String updateRole(Role role){
+        String sql = "update AUTH_ROLE t set role_name=? where role_code=? ";
+        Object[ ] args = {role.getRoleName(), role.getRoleCode()};
+        int cnt = ds1JdbcTemplate.update(sql, args);
+        if (cnt == 1){
+            return "";
+        }else{
+            return "err";
+        }
+    }
+
+    /**
+     * 删除角色
+     * @return
+     */
+    public String deleteRole(String roleCode){
+        String sql = "delete from AUTH_ROLE t where role_code=? ";
+        Object[ ] args = {roleCode};
+        int cnt = ds1JdbcTemplate.update(sql, args);
+        if (cnt == 1){
+            return "";
+        }else{
+            return "err";
+        }
+    }
 }
