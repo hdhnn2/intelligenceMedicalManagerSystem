@@ -38,7 +38,7 @@
     <!--生产环节中打印到production-->
     <springProfile name="production">
         <!--给log1指定文件输出-->
-        <logger name="com.hd" level="info" additivity="false">
+        <logger name="com.hd" level="warn" additivity="false">
             <appender-ref ref="logFile"/>
         </logger>
     </springProfile>
@@ -46,7 +46,7 @@
     <!--dev/gg环境中打印到控制台-->
     <springProfile name="dev">
         <!--给log1指定文件输出-->
-        <logger name="com.hd" level="warn" additivity="false">
+        <logger name="com.hd" level="info" additivity="false">
             <appender-ref ref="console"/>
         </logger>
     </springProfile>

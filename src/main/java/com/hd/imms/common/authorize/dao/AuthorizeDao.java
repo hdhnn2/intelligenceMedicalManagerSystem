@@ -39,8 +39,9 @@ public class AuthorizeDao {
      * @return
      */
     public String createRole(Role role){
-        String sql = "insert into AUTH_ROLE (role_code, role_name) values (?,?) ";
-        Object[ ] args = {role.getRoleCode(), role.getRoleName()};
+        String sql = "insert into AUTH_ROLE (role_code, role_name) " +
+                "values (lpad(auth_role_seq.nextval,3,'0'),?) ";
+        Object[ ] args = {role.getRoleName()};
         int cnt = ds1JdbcTemplate.update(sql, args);
         if (cnt == 1){
             return "";
