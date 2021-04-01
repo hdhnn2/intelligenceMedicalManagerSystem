@@ -53,6 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/**").permitAll()
                 // 获取用户信息URL
                 .antMatchers("/info").permitAll()
+                // 分诊URL
+                .antMatchers("/auth/queryUser").permitAll()
                 // 其他所有请求需要身份认证
                 .anyRequest().authenticated();
         // 退出登录处理器

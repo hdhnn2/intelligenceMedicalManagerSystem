@@ -2,15 +2,23 @@ package com.hd.imms.common.authorize.service;
 
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.dao.AuthorizeDao;
+import com.hd.imms.entity.authorize.User;
+import com.hd.imms.mapper.AuthUser;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
+@Slf4j
 public class AuthorizeService {
     @Autowired
     AuthorizeDao authorizeDao;
+    @Resource
+    @Autowired
+    AuthUser authUser;
 
     public List<Role> queryAllRoles(){
         List<Role> roleList =authorizeDao.queryAllRole();
@@ -41,5 +49,19 @@ public class AuthorizeService {
      */
     public String deleteRole(String roleCode){
         return authorizeDao.deleteRole(roleCode);
+    }
+
+    /**
+     * 查询用户
+     * @return
+     */
+    public List<User> queryUser(){
+        List<User> userList = null;
+        try{
+            userList = authUser.getUserList();
+        } catch (Exception e){
+            log.error("queryUser err: "+e.getMessage());
+        }
+        return userList;
     }
 }

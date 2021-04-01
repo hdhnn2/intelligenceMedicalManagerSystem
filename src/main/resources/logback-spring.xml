@@ -36,7 +36,7 @@
     </appender>
 
     <!--生产环节中打印到production-->
-    <springProfile name="production">
+    <springProfile name="dev">
         <!--给log1指定文件输出-->
         <logger name="com.hd" level="warn" additivity="false">
             <appender-ref ref="logFile"/>

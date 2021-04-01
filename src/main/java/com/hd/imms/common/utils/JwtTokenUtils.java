@@ -38,9 +38,9 @@ public class JwtTokenUtils implements Serializable {
      */
     private static final String SECRET = "abcdefgh";
     /**
-     * 有效期12小时
+     * 有效期30分钟
      */
-    private static final long EXPIRE_TIME = 12 * 60 * 60 * 1000;
+    private static final long EXPIRE_TIME = 30 * 1000;
 
     /**
      * 生成令牌

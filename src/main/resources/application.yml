@@ -1,3 +1,21 @@
 spring:
   profiles:
     active: production
+  #数据源
+  datasource:
+    ds1:
+      driver-class-name: oracle.jdbc.OracleDriver
+      url: jdbc:oracle:thin:@192.1.1.13:1521:orcl
+      username: system
+      password: manager
+    ds2:
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://192.1.2.30:1433;databaseName=rmlis6
+      username: lis
+      password: ruimeilis6.0
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.hd.imms.entity
+  configuration:
+    map-underscore-to-camel-case: true
+

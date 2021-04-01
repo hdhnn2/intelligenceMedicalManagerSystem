@@ -3,12 +3,9 @@ package com.hd.imms.common.authorize.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hd.imms.common.authorize.bean.LoginBean;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.service.AuthorizeService;
-import com.hd.imms.common.security.JwtAuthenticatioToken;
-import com.hd.imms.common.utils.HttpResult;
-import com.hd.imms.common.utils.SecurityUtils;
+import com.hd.imms.entity.authorize.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +69,19 @@ public class AuthorizeController {
         ret.put("msg", authorizeService.deleteRole(roleCode));
         log.info("deleteRole roleCode end ");
         return ret;
+    }
+    /**
+     * 查询用户
+     */
+    @GetMapping(value = "/queryUser")
+    public JSONObject queryUser( HttpServletRequest request) {
+        log.error("queryUser start: ");
+        // 系统登录认证
+        List<User> userList = authorizeService.queryUser();
+        JSONArray ret = (JSONArray) JSON.toJSON(userList);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", ret);
+        return retJSON;
     }
 }
