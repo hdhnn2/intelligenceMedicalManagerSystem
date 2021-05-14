@@ -1,14 +1,18 @@
 package com.hd.imms.common.authorize.service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.dao.AuthorizeDao;
 import com.hd.imms.entity.authorize.User;
-import com.hd.imms.mapper.AuthUser;
+import com.hd.imms.entity.authorize.UserRole;
+import com.hd.imms.mapper.ds1.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,12 +60,33 @@ public class AuthorizeService {
      * @return
      */
     public List<User> queryUser(){
-        List<User> userList = null;
+        List<User> userList = new ArrayList<User>();
         try{
-            userList = authUser.getUserList();
+            //userList = authUser.getUserList();
+            userList.add(authUser.getUserById("admin"));
         } catch (Exception e){
             log.error("queryUser err: "+e.getMessage());
         }
         return userList;
+    }
+    /**
+     * 查询用户角色
+     * @return
+     */
+    public JSONObject queryUserRoleById(String userId){
+        JSONObject ret = new JSONObject();
+        JSONArray arr = new JSONArray();
+        try{
+            List<UserRole> userRoleList = authUser.queryUserRoleById(userId);
+            if(userRoleList != null){
+                for(UserRole userRole : userRoleList){
+                    arr.add(userRole.getRoleId());
+                }
+            }
+        } catch (Exception e){
+            log.error("queryUser err: "+e.getMessage());
+        }
+        ret.put("roles",arr);
+        return ret;
     }
 }

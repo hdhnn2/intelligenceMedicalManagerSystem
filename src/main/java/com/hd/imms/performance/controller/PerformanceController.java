@@ -4,15 +4,20 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hd.imms.common.authorize.bean.Role;
+import com.hd.imms.entity.performance.DeptScore;
+import com.hd.imms.entity.performance.DeptVsClinic;
 import com.hd.imms.performance.bean.DeptCoefficient;
 import com.hd.imms.performance.service.PerformanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/performance")
@@ -22,7 +27,7 @@ public class PerformanceController {
     private PerformanceService performanceService;
 
     /**
-     * 查询所有角色
+     * 查询类型所有科室系数
      */
     @GetMapping(value = "/deptCoefficient/list/{type}")
     public JSONObject queryAllDeptCoefficientByType(@PathVariable("type") String type,HttpServletRequest request) {
@@ -46,5 +51,49 @@ public class PerformanceController {
         ret.put("msg", performanceService.updateDeptCoefficient(obj));
         log.error("updateDeptCoefficient end ");
         return ret;
+    }
+    /**
+     * 查询科室门诊对照
+     */
+    @GetMapping(value = "/deptCoefficient/queryDeptVsClinicList")
+    public JSONObject queryDeptVsClinicList(HttpServletRequest request) {
+        log.error("queryAllDeptCoefficientByType type: ");
+        List<DeptVsClinic> list = performanceService.queryDeptVsClinicList();
+        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", ret);
+        return retJSON;
+    }
+    /**
+     * 查询科室门诊对照
+     */
+    @PostMapping(value = "/deptCoefficient/queryDeptScore")
+    public JSONObject queryDeptScore(@RequestBody DeptScore obj, HttpServletRequest request) {
+        log.error("queryDeptScore DeptScore: "+obj.toString());
+        List<DeptScore> list = performanceService.queryDeptScore(obj);
+        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", ret);
+        return retJSON;
+    }
+    /**
+     * 查询科室门诊对照
+     */
+    @PostMapping(value = "/deptCoefficient/calDoctorScore")
+    public JSONObject calDoctorScore(@RequestBody DeptScore obj, HttpServletRequest request) {
+        Map<String,Object> params = new HashMap<String, Object>();
+        String czr = SecurityContextHolder.getContext().getAuthentication().getName();
+        String rq = obj.getRq();
+        log.error("calDoctorScore type: czip=" + request.getRemoteAddr()+", rq="+rq);
+        params.put("czr", czr);
+        params.put("rq", rq);
+        params.put("czip", request.getRemoteAddr());
+        String msg = performanceService.calDoctorScore(params);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", msg);
+        return retJSON;
     }
 }

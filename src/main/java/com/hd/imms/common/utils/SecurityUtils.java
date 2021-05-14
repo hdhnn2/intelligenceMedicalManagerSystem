@@ -3,12 +3,15 @@ package com.hd.imms.common.utils;
 import javax.servlet.http.HttpServletRequest;
 
 import com.hd.imms.common.security.JwtAuthenticatioToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import sun.reflect.annotation.ExceptionProxy;
 
+@Slf4j
 public class SecurityUtils {
 
     /**
@@ -19,15 +22,20 @@ public class SecurityUtils {
      * @param authenticationManager
      * @return
      */
-    public static JwtAuthenticatioToken login(HttpServletRequest request, String username, String password, AuthenticationManager authenticationManager) {
+    public static JwtAuthenticatioToken login(HttpServletRequest request, String username, String password, AuthenticationManager authenticationManager) throws Exception {
         JwtAuthenticatioToken token = new JwtAuthenticatioToken(username, password);
         token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // 执行登录认证过程
-        Authentication authentication = authenticationManager.authenticate(token);
-        // 认证成功存储认证信息到上下文
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // 生成令牌并返回给客户端
-        token.setToken(JwtTokenUtils.generateToken(authentication));
+        try {
+            Authentication authentication = authenticationManager.authenticate(token);
+            // 认证成功存储认证信息到上下文
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            // 生成令牌并返回给客户端
+            token.setToken(JwtTokenUtils.generateToken(authentication));
+        }catch (Exception e){
+            log.error("----------------------"+e.getMessage());
+            throw e;
+        }
         return token;
     }
 

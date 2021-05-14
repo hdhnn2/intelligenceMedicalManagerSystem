@@ -1,24 +1,36 @@
 package com.hd.imms.common.security;
 
+import com.hd.imms.entity.authorize.User;
+import com.hd.imms.mapper.ds1.AuthUser;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class SysUserServiceImpl implements UserService{
-    @Override
+@Slf4j
+public class SysUserServiceImpl {
+    @Resource
+    @Autowired
+    AuthUser authUser;
     public User findByUsername(String username) {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername(username);
-        String password = new BCryptPasswordEncoder().encode("123");
-        user.setPassword(password);
+        com.hd.imms.entity.authorize.User user = null;
+        try {
+            user = authUser.getUserById(username);
+        }catch (Exception e){
+            log.error("findByUsername error: "+e.getCause());
+        }
+        if(user != null){
+            String password = new BCryptPasswordEncoder().encode(user.getPassword());
+            user.setPassword(password);
+        }
         return user;
     }
 
-    @Override
     public Set<String> findPermissions(String username) {
         Set<String> permissions = new HashSet<>();
         permissions.add("sys:user:view");
