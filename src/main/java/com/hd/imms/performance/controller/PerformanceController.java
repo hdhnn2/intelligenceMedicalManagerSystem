@@ -79,7 +79,7 @@ public class PerformanceController {
         return retJSON;
     }
     /**
-     * 查询科室门诊对照
+     * 计算科室医生得分
      */
     @PostMapping(value = "/deptCoefficient/calDoctorScore")
     public JSONObject calDoctorScore(@RequestBody DeptScore obj, HttpServletRequest request) {
@@ -91,6 +91,42 @@ public class PerformanceController {
         params.put("rq", rq);
         params.put("czip", request.getRemoteAddr());
         String msg = performanceService.calDoctorScore(params);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", msg);
+        return retJSON;
+    }
+    /**
+     * 计算科室护士得分
+     */
+    @PostMapping(value = "/deptCoefficient/calNurseScore")
+    public JSONObject calNurseScore(@RequestBody DeptScore obj, HttpServletRequest request) {
+        Map<String,Object> params = new HashMap<String, Object>();
+        String czr = SecurityContextHolder.getContext().getAuthentication().getName();
+        String rq = obj.getRq();
+        log.error("calNurseScore type: czip=" + request.getRemoteAddr()+", rq="+rq);
+        params.put("czr", czr);
+        params.put("rq", rq);
+        params.put("czip", request.getRemoteAddr());
+        String msg = performanceService.calNurseScore(params);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", msg);
+        return retJSON;
+    }
+    /**
+     * 计算科室医生得分
+     */
+    @PostMapping(value = "/deptCoefficient/calMedLabScore")
+    public JSONObject calMedLabScore(@RequestBody DeptScore obj, HttpServletRequest request) {
+        Map<String,Object> params = new HashMap<String, Object>();
+        String czr = SecurityContextHolder.getContext().getAuthentication().getName();
+        String rq = obj.getRq();
+        log.error("calMedLabScore type: czip=" + request.getRemoteAddr()+", rq="+rq);
+        params.put("czr", czr);
+        params.put("rq", rq);
+        params.put("czip", request.getRemoteAddr());
+        String msg = performanceService.calMedLabScore(params);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
         retJSON.put("data", msg);

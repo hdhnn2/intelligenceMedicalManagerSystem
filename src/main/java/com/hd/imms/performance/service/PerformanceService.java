@@ -61,27 +61,52 @@ public class PerformanceService {
         return list;
     }
     /**
-     * 功能：查询科室得分
+     * 功能：计算科室医生得分
      * @date 2021-05-13
      * @return
      */
     public String calDoctorScore(Map<String,Object> params){
-        String msg = "";
         String rq = params.get("rq").toString();
         params.put("ksrq", getCalulateDate(rq, "start"));
         params.put("jsrq", getCalulateDate(rq, "end"));
         performance.calDoctorScore(params);
-        log.error("_____________________________"+(String)params.get("msg"));
+        String msg = (String)params.get("msg");
+        return msg;
+    }
+    /**
+     * 功能：计算科室护士得分
+     * @date 2021-05-14
+     * @return
+     */
+    public String calNurseScore(Map<String,Object> params){
+        String rq = params.get("rq").toString();
+        params.put("ksrq", getCalulateDate(rq, "start"));
+        params.put("jsrq", getCalulateDate(rq, "end"));
+        performance.calNurseScore(params);
+        String msg = (String)params.get("msg");
+        return msg;
+    }
+    /**
+     * 功能：计算医技科室得分
+     * @date 2021-05-14
+     * @return
+     */
+    public String calMedLabScore(Map<String,Object> params){
+        String rq = params.get("rq").toString();
+        params.put("ksrq", getCalulateDate(rq, "start"));
+        params.put("jsrq", getCalulateDate(rq, "end"));
+        performance.calMedLabScore(params);
+        String msg = (String)params.get("msg");
         return msg;
     }
     private String getCalulateDate(String rq, String type){
-        Integer year = Integer.parseInt(rq.substring(0,3));
+        Integer year = Integer.parseInt(rq.substring(0,4));
         Integer month = Integer.parseInt(rq.substring(5));
         Calendar cal = Calendar.getInstance();
         if(StringUtils.equals(type, "start")){
-            cal.set(month == 1 ? year-1 : year, month-1, 26);
+            cal.set(month == 1 ? year-1 : year, month-2, 26);
         }else{
-            cal.set(year, month, 25);
+            cal.set(year, month-1, 25);
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(cal.getTime());
