@@ -3,7 +3,13 @@ package com.hd.imms.performance.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hd.imms.common.authorize.bean.Role;
+import com.hd.imms.entity.common.DepartmentDictionary;
+import com.hd.imms.entity.common.SystemParameterBean;
+import com.hd.imms.entity.performance.BillDetail;
+import com.hd.imms.entity.performance.BillDetailQuery;
 import com.hd.imms.entity.performance.DeptScore;
 import com.hd.imms.entity.performance.DeptVsClinic;
 import com.hd.imms.performance.bean.DeptCoefficient;
@@ -130,6 +136,48 @@ public class PerformanceController {
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
         retJSON.put("data", msg);
+        return retJSON;
+    }
+
+    /**
+     * 查询费用明细
+     */
+    @PostMapping(value = "/deptCoefficient/queryBillDetail")
+    public JSONObject queryBillDetail(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
+        log.error("selectPageBillDetail: "+obj.toString());
+        //page..isSearchCount(true);
+        List<BillDetail> list = performanceService.selectPageBillDetail();
+        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", ret);
+        return retJSON;
+    }
+
+    /**
+     * 查询科室门诊对照
+     */
+    @GetMapping(value = "/deptCoefficient/checkDeptIsBrowse")
+    public JSONObject checkDeptIsBrowse(HttpServletRequest request) {
+        log.error("checkDeptIsBrowse type: ");
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", performanceService.checkDeptIsBrowse());
+        return retJSON;
+    }
+
+    /**
+     * 查询费用明细
+     */
+    @PostMapping(value = "/deptCoefficient/queryDeptDict")
+    public JSONObject queryDeptDict(@RequestBody DepartmentDictionary obj, HttpServletRequest request) {
+        log.error("queryDeptDict: "+obj.toString());
+        List<DepartmentDictionary> list = performanceService.queryDeptDict(obj);
+        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", ret);
         return retJSON;
     }
 }
