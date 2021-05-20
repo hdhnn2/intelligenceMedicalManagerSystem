@@ -146,7 +146,7 @@ public class PerformanceController {
     public JSONObject queryBillDetail(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
         log.error("selectPageBillDetail: "+obj.toString());
         //page..isSearchCount(true);
-        List<BillDetail> list = performanceService.selectPageBillDetail();
+        List<BillDetail> list = performanceService.selectPageBillDetail(obj);
         JSONArray ret = (JSONArray) JSON.toJSON(list);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);

@@ -5,6 +5,7 @@ import com.hd.imms.common.utils.Page;
 import com.hd.imms.entity.common.DepartmentDictionary;
 import com.hd.imms.entity.common.SystemParameterBean;
 import com.hd.imms.entity.performance.BillDetail;
+import com.hd.imms.entity.performance.BillDetailQuery;
 import com.hd.imms.entity.performance.DeptScore;
 import com.hd.imms.entity.performance.DeptVsClinic;
 import com.hd.imms.mapper.ds1.CommonMapper;
@@ -121,7 +122,7 @@ public class PerformanceService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(cal.getTime());
     }
-    public List<BillDetail> selectPageBillDetail() {
+    public List<BillDetail> selectPageBillDetail(BillDetailQuery obj) {
 
 /*        Page<BillDetail> page = new Page<>(1, 5);
         page.setOptimizeCountSql(false);
@@ -130,10 +131,15 @@ public class PerformanceService {
         page.setShowCount(1);
         page.setCurrentResult(3);
         Map<String,Object> params = new HashMap<String,Object>();
-        params.put("zyh","00496339");
-        List<BillDetail> orders = performance.selectPageBillDetail(page, "00496339");
-
-        return orders;
+        String[] jfrq = obj.getJfrq();
+        params.put("kssj", jfrq[0]+" 00:00:00");
+        params.put("jssj", jfrq[1]+" 23:59:59");
+        String xmmc = obj.getXmmc();
+        if(StringUtils.isNotEmpty(xmmc)){
+            params.put("xmmc", xmmc.trim());
+        }
+        List<BillDetail> list = performance.selectPageBillDetail(params);
+        return list;
     }
     public SystemParameterBean getSysParmById(SystemParameterBean obj){
         SystemParameterBean ret = new SystemParameterBean();
