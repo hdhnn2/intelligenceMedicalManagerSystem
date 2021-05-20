@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -172,6 +169,39 @@ public class PerformanceService {
      */
     public List<DepartmentDictionary> queryDeptDict(DepartmentDictionary obj){
         List<DepartmentDictionary> list = commonMapper.queryDeptDict(obj);
+        return list;
+    }
+
+    /**
+     * 查询医院费用，不分页
+     * @param obj
+     * @return
+     */
+    public List<BillDetail> queryHospitalBillByType(BillDetailQuery obj) {
+        List<BillDetail> list = new ArrayList<BillDetail>();
+        Map<String,Object> params = new HashMap<String,Object>();
+        String[] jfrq = obj.getJfrq();
+        params.put("ksrq", jfrq[0]);
+        params.put("jsrq", jfrq[1]);
+        params.put("kssj", jfrq[0]+" 00:00:00");
+        params.put("jssj", jfrq[1]+" 23:59:59");
+        String type = obj.getLx();
+        if(StringUtils.equals("1", type)){
+            //住院开单
+            list = performance.queryInpBillByOrder(params);
+        }
+        if(StringUtils.equals("2", type)){
+            //住院执行
+            list = performance.queryInpBillByPerformBy(params);
+        }
+        if(StringUtils.equals("3", type)){
+            //门诊开单
+            list = performance.queryOutpBillByOrder(params);
+        }
+        if(StringUtils.equals("4", type)){
+            //门诊开单
+            list = performance.queryOutpByPerformBy(params);
+        }
         return list;
     }
 }

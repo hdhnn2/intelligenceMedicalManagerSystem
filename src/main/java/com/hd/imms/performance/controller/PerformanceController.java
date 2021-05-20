@@ -180,4 +180,18 @@ public class PerformanceController {
         retJSON.put("data", ret);
         return retJSON;
     }
+
+    /**
+     * 查询用按核算类型医院项目费
+     */
+    @PostMapping(value = "/deptCoefficient/queryHospitalBillByType")
+    public JSONObject queryHospitalBillByType(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
+        log.error("queryHospitalBillByType: "+obj.toString());
+        List<BillDetail> list = performanceService.queryHospitalBillByType(obj);
+        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", ret);
+        return retJSON;
+    }
 }
