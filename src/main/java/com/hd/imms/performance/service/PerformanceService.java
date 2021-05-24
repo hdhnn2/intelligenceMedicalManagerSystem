@@ -2,6 +2,7 @@ package com.hd.imms.performance.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hd.imms.common.utils.Page;
+import com.hd.imms.common.utils.SecurityUtils;
 import com.hd.imms.entity.common.DepartmentDictionary;
 import com.hd.imms.entity.common.SystemParameterBean;
 import com.hd.imms.entity.performance.BillDetail;
@@ -17,6 +18,8 @@ import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -203,5 +206,35 @@ public class PerformanceService {
             list = performance.queryOutpByPerformBy(params);
         }
         return list;
+    }
+
+    /**
+     * 功能：查询科室得分
+     * @date 2021-05-13
+     * @return
+     */
+    public DeptScore queryDeptScoreByDept(DeptScore obj){
+        //查询当前用户所在科室
+        String userName = SecurityUtils.getUsername();
+        log.error("queryDeptScoreByDept userName:-___"+ userName);
+        DeptScore ret = new DeptScore();
+        if(StringUtils.isEmpty(userName) || StringUtils.equals(userName,StringUtils.lowerCase("anonymous"))){
+            return ret;
+        }
+        Map<String,String> map = new HashMap<>();
+        map.put("yhm", userName);
+        List<DepartmentDictionary> deptList = commonMapper.queryUserDeptById(map);
+        if(deptList != null && deptList.size()>0){
+            obj.setKsdm(deptList.get(0).getDeptCode());
+        }else{
+            //没有维护科室
+            return ret;
+        }
+        log.error("queryDeptScoreByDept obj:-___"+ obj.toString());
+        List<DeptScore> list = performance.queryDeptScore(obj);
+        if(list != null && list.size()>0){
+            ret = list.get(0);
+        }
+        return ret;
     }
 }

@@ -194,4 +194,16 @@ public class PerformanceController {
         retJSON.put("data", ret);
         return retJSON;
     }
+    /**
+     * 查询科室角色查询
+     */
+    @PostMapping(value = "/deptCoefficient/queryDeptScoreByDept")
+    public JSONObject queryDeptScoreByDept(@RequestBody DeptScore obj, HttpServletRequest request) {
+        log.error("queryDeptScoreByDept DeptScore: "+obj.toString());
+        DeptScore deptScore = performanceService.queryDeptScoreByDept(obj);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", JSON.toJSON(deptScore));
+        return retJSON;
+    }
 }
