@@ -140,17 +140,35 @@ public class PerformanceController {
     }
 
     /**
+     * 计算科室医生明细得分
+     */
+    @PostMapping(value = "/deptCoefficient/calDoctorScoreDetail")
+    public JSONObject calDoctorScoreDetail(@RequestBody DeptScore obj, HttpServletRequest request) {
+        Map<String,Object> params = new HashMap<String, Object>();
+        String czr = SecurityContextHolder.getContext().getAuthentication().getName();
+        String rq = obj.getRq();
+        log.error("calDoctorScoreDetail type: czip=" + request.getRemoteAddr()+", rq="+rq);
+        params.put("czr", czr);
+        params.put("rq", rq);
+        params.put("czip", request.getRemoteAddr());
+        String msg = performanceService.calDoctorScoreDetail(params);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", msg);
+        return retJSON;
+    }
+    /**
      * 查询费用明细
      */
     @PostMapping(value = "/deptCoefficient/queryBillDetail")
     public JSONObject queryBillDetail(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
         log.error("selectPageBillDetail: "+obj.toString());
         //page..isSearchCount(true);
-        List<BillDetail> list = performanceService.selectPageBillDetail(obj);
-        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        performanceService.selectPageBillDetail();
+        //JSONArray ret = (JSONArray) JSON.toJSON(list);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
-        retJSON.put("data", ret);
+        //retJSON.put("data", ret);
         return retJSON;
     }
 
@@ -204,6 +222,19 @@ public class PerformanceController {
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
         retJSON.put("data", JSON.toJSON(deptScore));
+        return retJSON;
+    }
+    /**
+     * 查询科室角色查询
+     */
+    @PostMapping(value = "/deptCoefficient/queryDeptScoreDetailByType")
+    public JSONObject queryDeptScoreDetailByType(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
+        log.error("queryDeptScoreDetailByType DeptScore: "+obj.toString());
+        List<BillDetail> list = performanceService.queryDeptScoreDetailByType(obj);
+        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", ret);
         return retJSON;
     }
 }

@@ -1,7 +1,8 @@
 package com.hd.imms.performance.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hd.imms.common.utils.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hd.imms.common.utils.SecurityUtils;
 import com.hd.imms.entity.common.DepartmentDictionary;
 import com.hd.imms.entity.common.SystemParameterBean;
@@ -110,16 +111,29 @@ public class PerformanceService {
         String msg = (String)params.get("msg");
         return msg;
     }
+    /**
+     * 功能：计算科室医生得分
+     * @date 2021-06-07
+     * @return
+     */
+    public String calDoctorScoreDetail(Map<String,Object> params){
+        String rq = params.get("rq").toString();
+        params.put("ksrq", getCalulateDate(rq, "start"));
+        params.put("jsrq", getCalulateDate(rq, "end"));
+        performance.calDoctorScoreDetail(params);
+        String msg = (String)params.get("msg");
+        return msg;
+    }
     private String getCalulateDate(String rq, String type){
         Integer year = Integer.parseInt(rq.substring(0,4));
         Integer month = Integer.parseInt(rq.substring(5));
         Calendar cal = Calendar.getInstance();
         if(StringUtils.equals(type, "start")){
-            cal.set(month == 1 ? year-1 : year, month-2, 26);
+            cal.set(month == 1 ? year-1 : year, month-2, 26, 0, 0, 0);
         }else{
-            cal.set(year, month-1, 25);
+            cal.set(year, month-1, 25, 23,59,59);
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(cal.getTime());
     }
     public List<BillDetail> selectPageBillDetail(BillDetailQuery obj) {
@@ -127,9 +141,6 @@ public class PerformanceService {
 /*        Page<BillDetail> page = new Page<>(1, 5);
         page.setOptimizeCountSql(false);
         List<BillDetail> userIPage = performance.selectPageBillDetail(page);*/
-        Page page = new Page();
-        page.setShowCount(1);
-        page.setCurrentResult(3);
         Map<String,Object> params = new HashMap<String,Object>();
         String[] jfrq = obj.getJfrq();
         params.put("kssj", jfrq[0]+" 00:00:00");
@@ -215,26 +226,61 @@ public class PerformanceService {
      */
     public DeptScore queryDeptScoreByDept(DeptScore obj){
         //查询当前用户所在科室
-        String userName = SecurityUtils.getUsername();
-        log.error("queryDeptScoreByDept userName:-___"+ userName);
+        String userDept = getUserDept();
         DeptScore ret = new DeptScore();
-        if(StringUtils.isEmpty(userName) || StringUtils.equals(userName,StringUtils.lowerCase("anonymous"))){
+        if(StringUtils.isEmpty(userDept)){
             return ret;
         }
-        Map<String,String> map = new HashMap<>();
-        map.put("yhm", userName);
-        List<DepartmentDictionary> deptList = commonMapper.queryUserDeptById(map);
-        if(deptList != null && deptList.size()>0){
-            obj.setKsdm(deptList.get(0).getDeptCode());
-        }else{
-            //没有维护科室
-            return ret;
-        }
+        obj.setKsdm(userDept);
         log.error("queryDeptScoreByDept obj:-___"+ obj.toString());
         List<DeptScore> list = performance.queryDeptScore(obj);
         if(list != null && list.size()>0){
             ret = list.get(0);
         }
         return ret;
+    }
+
+    // 查询科室手术积分
+    public List<BillDetail> queryDeptScoreDetailByType(BillDetailQuery obj){
+        Map<String,Object> params = new HashMap<String,Object>();
+        String rq = obj.getRq();
+        params.put("kssj", getCalulateDate(rq, "start"));
+        params.put("jssj", getCalulateDate(rq, "end"));
+        //当前用户所在科室
+        String userDept = getUserDept();
+        params.put("orderBy", userDept);
+        if(StringUtils.equals(obj.getLx(), "1")){
+            return queryDeptOperationScoreDetail(params);
+        }
+        return null;
+    }
+    // 查询科室手术积分
+    public List<BillDetail> queryDeptOperationScoreDetail(Map<String,Object> params){
+        List<BillDetail> list = performance.queryDeptOperationScoreDetail(params);
+        return list;
+    }
+    public IPage<BillDetail> selectPageBillDetail() {
+
+        Page<BillDetail> page = new Page<>(1, 5);
+        IPage<BillDetail> userIPage = performance.selectPageBillDetail1(page);
+
+        return userIPage;
+    }
+    public String getUserDept(){
+        //查询当前用户所在科室
+        String userName = SecurityUtils.getUsername();
+        String userDept = "";
+        log.error("getUserDept userName:-___"+ userName);
+        DeptScore ret = new DeptScore();
+        if(StringUtils.isEmpty(userName) || StringUtils.equals(userName,StringUtils.lowerCase("anonymous"))){
+            return userDept;
+        }
+        Map<String,String> map = new HashMap<>();
+        map.put("yhm", userName);
+        List<DepartmentDictionary> deptList = commonMapper.queryUserDeptById(map);
+        if(deptList != null && deptList.size()>0){
+            userDept = deptList.get(0).getDeptCode();
+        }
+        return userDept;
     }
 }
