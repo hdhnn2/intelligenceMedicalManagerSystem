@@ -1,7 +1,7 @@
 package com.hd.imms.common.security;
 
 import com.hd.imms.entity.authorize.User;
-import com.hd.imms.mapper.ds1.AuthUser;
+import com.hd.imms.mapper.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

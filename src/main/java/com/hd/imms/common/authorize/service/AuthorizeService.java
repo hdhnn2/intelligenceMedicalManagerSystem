@@ -6,7 +6,7 @@ import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.dao.AuthorizeDao;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.authorize.UserRole;
-import com.hd.imms.mapper.ds1.AuthUser;
+import com.hd.imms.mapper.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ import java.util.List;
 public class AuthorizeService {
     @Autowired
     AuthorizeDao authorizeDao;
+
     @Resource
     @Autowired
     AuthUser authUser;

@@ -14,7 +14,7 @@ import java.util.List;
 public class AuthorizeDao {
 
     @Autowired
-    JdbcTemplate ds1JdbcTemplate;
+    JdbcTemplate jdbcTemplate;
 
     /**
      * 查询所有角色
@@ -22,7 +22,7 @@ public class AuthorizeDao {
      */
     public List<Role> queryAllRole(){
         String sql = "select * from AUTH_ROLE t ";
-        List<Role> list = ds1JdbcTemplate.query(sql,
+        List<Role> list = jdbcTemplate.query(sql,
                 new RowMapper<Role>() {
                     @Override
                     public Role mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -42,7 +42,7 @@ public class AuthorizeDao {
         String sql = "insert into AUTH_ROLE (role_code, role_name) " +
                 "values (lpad(auth_role_seq.nextval,3,'0'),?) ";
         Object[ ] args = {role.getRoleName()};
-        int cnt = ds1JdbcTemplate.update(sql, args);
+        int cnt = jdbcTemplate.update(sql, args);
         if (cnt == 1){
             return "";
         }else{
@@ -56,7 +56,7 @@ public class AuthorizeDao {
     public String updateRole(Role role){
         String sql = "update AUTH_ROLE t set role_name=? where role_code=? ";
         Object[ ] args = {role.getRoleName(), role.getRoleCode()};
-        int cnt = ds1JdbcTemplate.update(sql, args);
+        int cnt = jdbcTemplate.update(sql, args);
         if (cnt == 1){
             return "";
         }else{
@@ -71,7 +71,7 @@ public class AuthorizeDao {
     public String deleteRole(String roleCode){
         String sql = "delete from AUTH_ROLE t where role_code=? ";
         Object[ ] args = {roleCode};
-        int cnt = ds1JdbcTemplate.update(sql, args);
+        int cnt = jdbcTemplate.update(sql, args);
         if (cnt == 1){
             return "";
         }else{

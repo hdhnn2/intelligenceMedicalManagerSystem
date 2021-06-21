@@ -162,9 +162,10 @@ public class PerformanceController {
      */
     @PostMapping(value = "/deptCoefficient/queryBillDetail")
     public JSONObject queryBillDetail(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
-        log.error("selectPageBillDetail: "+obj.toString());
+        log.error("queryBillDetail: "+obj.toString());
         //page..isSearchCount(true);
-        performanceService.selectPageBillDetail();
+        IPage<BillDetail> page = performanceService.selectPageBillDetail();
+        log.error("queryBillDetail ret: "+page.toString());
         //JSONArray ret = (JSONArray) JSON.toJSON(list);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
