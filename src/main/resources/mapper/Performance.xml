@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hd.imms.mapper.Performance">
+    <select id="queryDeptVsClinicList" resultType="com.hd.imms.entity.performance.DeptVsClinic">
+        select t.ksdm,t.mzdm,a.dept_name as ksmc,b.dept_name as mzmc,t.tybz,t.tyrq
+        from XJX_ZYKS_VS_MZ t
+        left join dept_dict a on t.ksdm=a.dept_code
+        left join dept_dict b on t.mzdm=b.dept_code
+        order by t.ksdm
+    </select>
+    <select id="queryDeptScore" resultType="com.hd.imms.entity.performance.DeptScore" parameterType="com.hd.imms.entity.performance.DeptScore">
+        select *
+        from v_xjx_ksdf t
+        where t.lx=#{lx} and t.rq=#{rq}
+        <if test="ksmc != null and ksmc != ''">
+            and t.ksmc like concat(concat('%',#{ksmc}),'%')
+        </if>
+        <if test="ksdm != null and ksdm != ''">
+            and t.ksdm=#{ksdm}
+        </if>
+        order by t.ksdm
+    </select>
+    <!-- 工作量统计 -->
+    <select id="calDoctorScore" statementType="CALLABLE">
+        {CALL P_XJX_KSDF_DOCTOR(#{ksrq,mode=IN}, #{jsrq,mode=IN},#{czr,mode=IN},#{czip,mode=IN}, #{msg,mode=OUT, jdbcType=VARCHAR})}
+    </select>
+    <select id="calNurseScore" statementType="CALLABLE">
+        {CALL P_XJX_KSDF_NURSE(#{ksrq,mode=IN}, #{jsrq,mode=IN},#{czr,mode=IN},#{czip,mode=IN}, #{msg,mode=OUT, jdbcType=VARCHAR})}
+    </select>
+    <select id="calMedLabScore" statementType="CALLABLE">
+        {CALL P_XJX_KSDF_MEDLAB(#{ksrq,mode=IN}, #{jsrq,mode=IN},#{czr,mode=IN},#{czip,mode=IN}, #{msg,mode=OUT, jdbcType=VARCHAR})}
+    </select>
+    <select id="calDoctorScoreDetail" statementType="CALLABLE">
+        {CALL P_XJX_YSDF(#{ksrq,mode=IN}, #{jsrq,mode=IN},#{czr,mode=IN},#{czip,mode=IN}, #{msg,mode=OUT, jdbcType=VARCHAR})}
+    </select>
+    <!-- 查询费用 -->
+    <select id="selectPageBillDetail" resultType="com.hd.imms.entity.performance.BillDetail">
+        select a.dept_name as ordered_by_dept_name,t.item_class,c.class_name,t.item_code,t.item_name,
+        round((t.item_price/9.1),2) as jf,sum(t.amount) as amount,round(sum((t.item_price/9.1)*t.amount),2) as zjf,t.ordered_by
+        from inp_bill_detail t
+        left join dept_dict a on t.ordered_by=a.dept_code
+        left join bill_item_class_dict c on t.item_class=c.class_code
+        where t.billing_date_time >= to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and t.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and regexp_like(t.ordered_by,'^01\d{4}')
+        <if test="xmmc != null and xmmc != ''">
+            and t.item_name like concat(concat('%',#{xmmc}),'%')
+        </if>
+        and rownum &lt; 50
+        group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
+    </select>
+    <!-- 住院开单费用 -->
+    <select id="queryInpBillByOrder" resultType="com.hd.imms.entity.performance.BillDetail">
+        select c.dept_name as ksmc,
+        #{ksrq} || '~' || #{jsrq} as jfrq,
+        b1.class_on_reckoning as hsxmdm,
+        d.class_name as hsxmmc,
+        sum(b1.charges) as fy
+        from inp_bill_detail b1,
+        dept_dict c,reck_item_class_dict d
+        where b1.ordered_by=c.dept_code(+)
+        and b1.class_on_reckoning=d.class_code(+)
+        and b1.billing_date_time >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and b1.billing_date_time &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and c.branch_code='01'
+        group by c.dept_code,c.dept_name,b1.class_on_reckoning,d.class_name
+        ORDER BY c.dept_code,b1.class_on_reckoning
+    </select>
+    <select id="queryInpBillByPerformBy" resultType="com.hd.imms.entity.performance.BillDetail">
+        select c.dept_name as ksmc,
+        #{ksrq} || '~' || #{jsrq} as jfrq,
+        b1.class_on_reckoning as hsxmdm,
+        d.class_name as hsxmmc,
+        sum(b1.charges) as fy
+        from inp_bill_detail b1,
+        dept_dict c,reck_item_class_dict d
+        where b1.performed_by=c.dept_code(+)
+        and b1.class_on_reckoning=d.class_code(+)
+        and b1.billing_date_time >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and b1.billing_date_time &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and c.branch_code='01'
+        group by c.dept_code,c.dept_name,b1.class_on_reckoning,d.class_name
+        ORDER BY c.dept_code,b1.class_on_reckoning
+    </select>
+    <select id="queryOutpBillByOrder" resultType="com.hd.imms.entity.performance.BillDetail">
+        select c.dept_name as ksmc,
+        #{ksrq} || '~' || #{jsrq} as jfrq,
+        t.class_on_reckoning as hsxmdm,
+        d.class_name as hsxmmc,
+        sum(t.charges) as fy
+        from outp_bill_items t
+        left join outp_order_desc a on t.visit_date=a.visit_date and t.visit_no=a.visit_no and t.rcpt_no=a.rcpt_no
+        left join dept_dict c on a.ordered_by_dept=c.dept_code
+        left join reck_item_class_dict d on t.class_on_reckoning=d.class_code
+        where  t.visit_date >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and t.visit_date &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and c.branch_code='01'
+        group by c.dept_code,c.dept_name,t.class_on_reckoning,d.class_name
+        ORDER BY c.dept_code,t.class_on_reckoning
+    </select>
+    <select id="queryOutpByPerformBy" resultType="com.hd.imms.entity.performance.BillDetail">
+        select c.dept_name as ksmc,
+        #{ksrq} || '~' || #{jsrq} as jfrq,
+        b1.class_on_reckoning as hsxmdm,
+        d.class_name as hsxmmc,
+        sum(b1.charges) as fy
+        from outp_bill_items b1,
+        dept_dict c,reck_item_class_dict d
+        where b1.performed_by=c.dept_code(+)
+        and b1.class_on_reckoning=d.class_code(+)
+        and b1.visit_date >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and b1.visit_date &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
+        and c.branch_code='01'
+        group by c.dept_code,c.dept_name,b1.class_on_reckoning,d.class_name
+        ORDER BY c.dept_code,b1.class_on_reckoning
+    </select>
+
+    <!-- 查询费用test -->
+    <select id="selectPageBillDetail1" resultType="com.hd.imms.entity.performance.BillDetail">
+        select a.dept_name as ordered_by_dept_name,t.item_class,c.class_name,t.item_code,t.item_name,
+        round((t.item_price/9.1),2) as jf,sum(t.amount) as amount,round(sum((t.item_price/9.1)*t.amount),2) as zjf,t.ordered_by
+        from inp_bill_detail t
+        left join dept_dict a on t.ordered_by=a.dept_code
+        left join bill_item_class_dict c on t.item_class=c.class_code
+        where t.billing_date_time >= to_date('2021-05-21 00:00:00','yyyy-mm-dd hh24:mi:ss')
+        and t.billing_date_time &lt;= to_date('2021-05-22 00:00:00','yyyy-mm-dd hh24:mi:ss')
+        and regexp_like(t.ordered_by,'^01\d{4}')
+        and rownum &lt; 50
+        group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
+    </select>
+    <!-- 科室手术查询 -->
+    <select id="queryDeptOperationScoreDetail" resultType="com.hd.imms.entity.performance.BillDetail">
+        select ibd.item_class,ibd.item_code,ibd.item_name,round(ibd.item_price/9.1, 2) as jf,sum(ibd.amount) as amount,sum(round(ibd.costs/9.1, 2)) as zjf,'zy' as lx
+        from  inp_bill_detail ibd
+        left join dept_dict a1 on ibd.ordered_by=a1.dept_code
+        where
+        ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and ((ibd.item_class='F' OR (ibd.item_code like '32%' and ibd.item_class IN ('D','E'))))
+        and ibd.ordered_by ='#{orderBy}'
+        group by ibd.item_class,ibd.item_code,ibd.item_name,ibd.item_price
+        union all
+        select d11.item_class,d11.item_code,d11.item_name,round(d11.item_price/9.1, 2) as jf,sum(d11.amount) as amount,sum(round(d11.costs/9.1, 2)) as zjf,'mz' as lx
+        from xjx_zyks_vs_mz t11
+        join outp_order_desc c11 on t11.mzdm=c11.ordered_by_dept
+        join outp_bill_items d11 on c11.visit_date=d11.visit_date and c11.visit_no=d11.visit_no
+        and c11.rcpt_no=d11.rcpt_no
+        where
+        d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and (d11.item_class='F' OR (d11.item_code like '32%' and d11.item_class IN ('D','E')))
+        and t11.ksdm ='#{orderBy}'
+        group by d11.item_class,d11.item_code,d11.item_name,d11.item_price
+    </select>
+    <!-- 查询医生个人得分列表2021-06-21 -->
+    <select id="queryDoctorScoreByPage" resultType="com.hd.imms.entity.performance.DeptScore">
+        select t.rq,a.dept_name as ksmc,b.name,t.mzlfz,t.mzljf,t.mzljj,
+        t.fhxfz,t.fhxjf,t.fhxjj,t.hxjffz as hxfz,t.hxjfjf as hxjf,t.hxjfjj as hxjj,
+        t.ssfz,t.ssjf,t.ssjj,t.kfxmfz,t.kfxmjf,t.kfxmjj,t.qtxmzx as qtxmjf
+        from XJX_DFMX t
+        left join dept_dict a on t.ksdm=a.dept_code
+        left join staff_dict b on t.zgh=b.user_name
+        where t.rq = #{rq}
+        <if test="ksmc != null and ksmc != ''">
+            and a.dept_name like concat(concat('%',#{ksmc}),'%')
+        </if>
+        order by t.ksdm,t.zgh
+    </select>
+</mapper>

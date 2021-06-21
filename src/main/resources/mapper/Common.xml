@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hd.imms.mapper.CommonMapper">
+    <!-- 系统参数 -->
+    <select id="querySystemParameter" resultType="com.hd.imms.entity.common.SystemParameterBean"  parameterType="com.hd.imms.entity.common.SystemParameterBean">
+        select *
+        from xjx_xtcsb t
+        where 1=1
+        <if test="csdm != null and csdm != ''">
+          and t.csdm=#{csdm}
+        </if>
+        <if test="zcsdm != null and zcsdm !=''">
+            and t.zcsdm=#{zcsdm}
+        </if>
+        order by t.csdm,t.zcsdm
+    </select>
+    <!-- 部门表 -->
+    <select id="queryDeptDict" resultType="com.hd.imms.entity.common.DepartmentDictionary" parameterType="com.hd.imms.entity.common.DepartmentDictionary">
+        select t.dept_code,t.dept_name from dept_dict t
+        where t.branch_code='01'
+        and t.internal_or_sergery='2'
+        and t.outp_or_inp &lt; '2'
+        and length(t.dept_code) &gt; 2
+        <if test="deptName != null and deptName !=''">
+            and t.deptName like concat(concat('%',#{deptName}),'%')
+        </if>
+        order by t.dept_code
+    </select>
+    <!-- 查询用户所在科室 -->
+    <select id="queryUserDeptById" resultType="com.hd.imms.entity.common.DepartmentDictionary" >
+        select t.dept_code from staff_dict t
+        where t.user_name=#{yhm}
+    </select>
+</mapper>
