@@ -238,4 +238,17 @@ public class PerformanceController {
         retJSON.put("data", ret);
         return retJSON;
     }
+    /**
+     * 查询费用明细
+     */
+    @PostMapping(value = "/deptCoefficient/queryDoctorScoreByPage")
+    public JSONObject queryDoctorScoreByPage(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
+        log.error("queryBillDetail: "+obj.toString());
+        IPage<BillDetail> page = performanceService.queryDoctorScoreByPage(obj);
+        //JSONArray ret = (JSONArray) JSON.toJSON(page.getRecords());
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", page);
+        return retJSON;
+    }
 }

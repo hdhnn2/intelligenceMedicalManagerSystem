@@ -283,4 +283,23 @@ public class PerformanceService {
         }
         return userDept;
     }
+
+    /**
+     * 查询医生个人得分概览
+     * @Date 2021-06-21
+     * @return
+     */
+    public IPage<BillDetail> queryDoctorScoreByPage(BillDetailQuery params) {
+        Page<BillDetail> page = new Page<>(params.getCurrent(), params.getSize());
+        IPage<BillDetail> userIPage = performance.queryDoctorScoreByPage(page, params.getRq(), params.getKsmc());
+        return userIPage;
+    }
+    /**
+     *
+     */
+    public JSONObject convertPageToJSON(Page page){
+        JSONObject ret = new JSONObject();
+        ret.put("items", page.getRecords());
+        return ret;
+    }
 }
