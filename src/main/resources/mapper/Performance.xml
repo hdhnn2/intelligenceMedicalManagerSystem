@@ -168,4 +168,192 @@
         </if>
         order by t.ksdm,t.zgh
     </select>
+    <!-- 科室得分明细2021-06-23 -->
+    <select id="queryDeptOperationDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
+        select * from
+        (
+        select ibd.ordered_by as ksdm,a1.dept_name,a2.class_name,ibd.item_code,ibd.item_name,
+        sum(ibd.amount) as sl,sum(round(ibd.costs/9.1, 2)) as zfz,'zy' as lx
+        from  inp_bill_detail ibd
+        left join dept_dict a1 on ibd.ordered_by=a1.dept_code
+        left join bill_item_class_dict a2 on ibd.item_class=a2.class_code
+        where regexp_like(ibd.ordered_by, '^01')
+        and ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and ((ibd.item_class='F' OR (ibd.item_code like '32%' and ibd.item_class IN ('D','E'))))
+        and ibd.ordered_by not in ('012701','012801','012901')
+        group by ibd.ordered_by,a1.dept_name,ibd.item_class,a2.class_name,ibd.item_code,ibd.item_name
+        union all
+        select t11.ksdm,e11.dept_name,a2.class_name,d11.item_code,d11.item_name,
+        sum(d11.amount) as sl,sum(round(d11.costs/9.1, 2)) as zfz,'mz' as lx
+        from xjx_zyks_vs_mz t11
+        join outp_order_desc c11 on t11.mzdm=c11.ordered_by_dept
+        join outp_bill_items d11 on c11.visit_date=d11.visit_date and c11.visit_no=d11.visit_no
+        and c11.rcpt_no=d11.rcpt_no
+        left join dept_dict e11 on t11.ksdm=e11.dept_code
+        left join bill_item_class_dict a2 on d11.item_class=a2.class_code
+        where
+        d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and (d11.item_class='F' OR (d11.item_code like '32%' and d11.item_class IN ('D','E')))
+        and t11.ksdm not in ('012701','012801','012901')
+        group by t11.ksdm,e11.dept_name,d11.item_class,a2.class_name,d11.item_code,d11.item_name
+        ) aaa
+        order by aaa.ksdm,aaa.class_name,aaa.item_code
+    </select>
+    <select id="queryDeptLabDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
+        select * from
+        (
+        select ibd.ordered_by as ksdm,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name,
+        sum(ibd.amount) as sl,sum(ibd.amount*round((ibd.item_price/21),2)) as zfz, 'zy' as lx
+        from inp_bill_detail ibd
+        left join dept_dict dd on ibd.ordered_by=dd.dept_code
+        left join bill_item_class_dict a on ibd.item_class=a.class_code
+        where ibd.performed_by like '02%'
+        and ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.billing_date_time &lt;=to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and regexp_like(ibd.item_class,'C|D')
+        group by ibd.ordered_by,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
+        union all
+        select t.ksdm,dd.dept_name,a.class_name,d.item_code,d.item_name,
+        sum(d.amount) as sl,sum(d.amount*round((d.item_price/21),2)) as zfz,'mz' as lx
+        from xjx_zyks_vs_mz t
+        join outp_order_desc c on t.mzdm=c.ordered_by_dept
+        join outp_bill_items d on c.visit_date=d.visit_date and c.visit_no=d.visit_no and c.rcpt_no=d.rcpt_no
+        left join dept_dict dd on t.ksdm=dd.dept_code
+        left join bill_item_class_dict a on d.item_class=a.class_code
+        where d.performed_by like '02%'
+        and d.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and d.visit_date &lt;=to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and nvl(t.tybz,'0')='0'
+        and regexp_like(D.item_class,'C|D')
+        group by t.ksdm,dd.dept_name,a.class_name,d.item_code,d.item_name
+        ) aa
+        order by aa.ksdm,aa.class_name,aa.item_code
+    </select>
+    <select id="queryDeptTreatDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
+        select * from
+        (
+        select ibd.ordered_by as ksdm,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name,
+        sum(ibd.amount) as sl,sum(ibd.amount*round(ibd.item_price/9.1,2)) as zfz, 'zy' as lx
+        from inp_bill_detail ibd
+        left join dept_dict dd on ibd.ordered_by=dd.dept_code
+        left join bill_item_class_dict a on ibd.item_class=a.class_code
+        where regexp_like(ibd.item_class,'E|J|K|L|Z')
+        and ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        group by ibd.ordered_by,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
+        union all
+        select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
+        sum(d11.amount) as sl,sum(d11.amount*round(d11.item_price/9.1,2)) as zfz,'mz' as lx
+        from xjx_zyks_vs_mz t11
+        join outp_order_desc c11 on t11.mzdm=c11.ordered_by_dept
+        join outp_bill_items d11 on c11.visit_date=d11.visit_date and c11.visit_no=d11.visit_no
+        and c11.rcpt_no=d11.rcpt_no
+        left join dept_dict dd on t11.ksdm=dd.dept_code
+        left join bill_item_class_dict a on d11.item_class=a.class_code
+        where regexp_like(d11.item_class,'E|J|K|L|Z')
+        and d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and nvl(t11.tybz,'0')='0'
+        group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
+        ) aa
+        order by aa.ksdm,aa.class_name,aa.item_code
+    </select>
+    <select id="queryDeptExecuteDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
+        select * from
+        (
+        select F_XJX_GET_DEPTCODE(ibd.performed_by) as ksdm,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name,
+        sum(ibd.amount) as sl,sum(ibd.amount*round(ibd.item_price/9.1,2)) as zfz, 'zy' as lx
+        from inp_bill_detail ibd
+        left join dept_dict dd on F_XJX_GET_DEPTCODE(ibd.performed_by)=dd.dept_code
+        left join bill_item_class_dict a on ibd.item_class=a.class_code
+        where ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.performed_by not like '02%'
+        and (case when (ibd.item_code like '32%' and ibd.item_class IN ('D','E')) or ibd.item_class='F' then '1'  else '0' end)='0'
+        and not exists (select aa.xmdm from xjx_xm_special aa where lx='0' and ibd.item_code=aa.xmdm)
+        and regexp_like(ibd.item_class, 'C|D|G')
+        AND regexp_like(ibd.performed_by,'^01')
+        group by F_XJX_GET_DEPTCODE(ibd.performed_by),dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
+        union all
+        select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
+        sum(d11.amount) as sl,sum(d11.amount*round(d11.item_price/9.1,2)) as zfz,'mz' as lx
+        from xjx_zyks_vs_mz t11
+        join outp_bill_items d11 on T11.MZDM=D11.PERFORMED_BY
+        left join dept_dict dd on t11.ksdm=dd.dept_code
+        left join bill_item_class_dict a on d11.item_class=a.class_code
+        where d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and d11.performed_by not like '02%'
+        and (case when (d11.item_code like '32%' and d11.item_class IN ('D','E')) or d11.item_class='F' then '1' else '0' end)='0'
+        and not exists (select aa.xmdm from xjx_xm_special aa where lx='0' and d11.item_code=aa.xmdm)
+        and regexp_like(d11.item_class, '[CDG]')
+        AND regexp_like(t11.ksdm,'^01')
+        group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
+        ) aa
+        order by aa.ksdm,aa.class_name,aa.item_code
+    </select>
+    <select id="queryDeptRecoveryDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
+        select * from
+        (
+        select ibd.ordered_by as ksdm,a1.dept_name,a.class_name,ibd.item_code,ibd.item_name,
+        sum(ibd.amount) as sl,sum(ibd.amount*round(ibd.item_price/9.1,2)) as zfz, 'zy' as lx
+        from  inp_bill_detail ibd
+        left join dept_dict a1 on ibd.ordered_by=a1.dept_code
+        left join bill_item_class_dict a on ibd.item_class=a.class_code
+        where
+        regexp_like(ibd.ordered_by, '^01')
+        and ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.item_code in (select aa.xmdm from xjx_xm_special aa where lx='0')
+        and ibd.ordered_by not in ('012801','012901')
+        group by ibd.ordered_by,a1.dept_name,a.class_name,ibd.item_code,ibd.item_name
+        union all
+        select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
+        sum(d11.amount) as sl,sum(d11.amount*round(d11.item_price/9.1,2)) as zfz,'mz' as lx
+        from xjx_zyks_vs_mz t11
+        join outp_order_desc c11 on t11.mzdm=c11.ordered_by_dept
+        join outp_bill_items d11 on c11.visit_date=d11.visit_date and c11.visit_no=d11.visit_no
+        and c11.rcpt_no=d11.rcpt_no
+        left join dept_dict dd on t11.ksdm=dd.dept_code
+        left join bill_item_class_dict a on d11.item_class=a.class_code
+        where
+        d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and d11.item_code in (select aa.xmdm from xjx_xm_special aa where lx='0')
+        and t11.ksdm not in ('012801','012901')
+        group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
+        ) aa
+        order by aa.ksdm,aa.class_name,aa.item_code
+    </select>
+    <!-- 科室得分明细end 2021-06-25 -->
+    <!-- 科室护士得分明细start 2021-06-25 -->
+    <select id="queryDischargeDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
+        select (select aa.dept_name from dept_dict aa where aa.dept_code=substr(d.discharge_ward_code,1,4) || '01') as dept_name,
+        d.patient_id,a.name,d.visit_id,to_char(d.discharge_date_time,'yyyy-mm-dd') as cysj
+        from pat_visit d
+        left join pat_master_index a on d.patient_id=a.patient_id
+        where d.discharge_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and d.discharge_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and d.discharge_ward_code like '01%'
+        order by d.discharge_ward_code,d.discharge_date_time
+    </select>
+    <select id="queryNurseCareDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
+        select F_XJX_GET_DEPTCODE(ibd.performed_by) as ksdm,b.dept_name,ibd.item_class,a.class_name,ibd.item_code,ibd.item_name,
+        sum(ibd.amount) as sl,sum(ibd.amount*round(ibd.item_price/9.1,2)) as zfz
+        from inp_bill_detail ibd
+        left join bill_item_class_dict a on ibd.item_class=a.class_code
+        left join dept_dict b on F_XJX_GET_DEPTCODE(ibd.performed_by)=b.dept_code
+        where ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and regexp_like(ibd.item_class,'E|J|K|L|Z|C|D|G')
+        and (case when (ibd.item_code like '32%' and ibd.item_class IN ('D','E')) or ibd.item_class='F' then '1'  else '0' end)='0'
+        and not exists (select aa.xmdm from xjx_xm_special aa where lx='0' and ibd.item_code=aa.xmdm)
+        and regexp_like(ibd.performed_by, '^01')
+        group by F_XJX_GET_DEPTCODE(ibd.performed_by),b.dept_name,ibd.item_class,a.class_name,ibd.item_code,ibd.item_name
+        order by F_XJX_GET_DEPTCODE(ibd.performed_by)
+    </select>
+    <!-- 科室护士得分明细end 2021-06-25 -->
+
 </mapper>

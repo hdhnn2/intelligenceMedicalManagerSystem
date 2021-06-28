@@ -1,15 +1,15 @@
 package com.hd.imms.performance.service;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hd.imms.common.utils.SecurityUtils;
 import com.hd.imms.entity.common.DepartmentDictionary;
 import com.hd.imms.entity.common.SystemParameterBean;
-import com.hd.imms.entity.performance.BillDetail;
-import com.hd.imms.entity.performance.BillDetailQuery;
-import com.hd.imms.entity.performance.DeptScore;
-import com.hd.imms.entity.performance.DeptVsClinic;
+import com.hd.imms.entity.performance.*;
 import com.hd.imms.mapper.CommonMapper;
 import com.hd.imms.mapper.Performance;
 import com.hd.imms.performance.bean.DeptCoefficient;
@@ -24,6 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -301,5 +303,86 @@ public class PerformanceService {
         JSONObject ret = new JSONObject();
         ret.put("items", page.getRecords());
         return ret;
+    }
+    /**
+     * 功能：计算科室得分明细
+     * @date 2021-06-07
+     * @return
+     */
+    public void downLoadExcel(BillDetailQuery obj, HttpServletResponse response) throws IOException {
+        String lx = obj.getLx();
+        switch (lx){
+            case "1":
+                downLoadDeptDetail(obj, response);
+                break;
+            case "2":
+                downLoadNurseDetail(obj, response);
+                break;
+            case "3":
+
+                break;
+            case "4":
+
+                break;
+        }
+    }
+    /**
+     * 功能：计算科室得分明细
+     * @date 2021-06-07
+     * @return
+     */
+    public void downLoadDeptDetail(BillDetailQuery obj, HttpServletResponse response) throws IOException {
+        String rq = obj.getRq();
+        Map<String, Object> params = new HashMap<>();
+        params.put("kssj", getCalulateDate(rq, "start"));
+        params.put("jssj", getCalulateDate(rq, "end"));
+        List<ScoreDetail> operationList = performance.queryDeptOperationDetail(params);
+        List<ScoreDetail> labList = performance.queryDeptLabDetail(params);
+        List<ScoreDetail> treatList = performance.queryDeptTreatDetail(params);
+        List<ScoreDetail> deptExecuteList = performance.queryDeptExecuteDetail(params);
+        List<ScoreDetail> recoveryList = performance.queryDeptRecoveryDetail(params);
+        ExcelWriter excelWriter = null;
+        try{
+            excelWriter = EasyExcel.write(response.getOutputStream(), ScoreDetail.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet(0, "手术").build();
+            excelWriter.write(operationList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(1, "非核心").build();
+            excelWriter.write(labList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(2, "核心").build();
+            excelWriter.write(treatList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(3, "本科室执行").build();
+            excelWriter.write(deptExecuteList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(4, "康复").build();
+            excelWriter.write(recoveryList, writeSheet);
+        } finally {
+            if(excelWriter != null){
+                excelWriter.finish();
+            }
+        }
+    }
+    /**
+     * 功能：计算科室得分明细
+     * @date 2021-06-07
+     * @return
+     */
+    public void downLoadNurseDetail(BillDetailQuery obj, HttpServletResponse response) throws IOException {
+        String rq = obj.getRq();
+        Map<String, Object> params = new HashMap<>();
+        params.put("kssj", getCalulateDate(rq, "start"));
+        params.put("jssj", getCalulateDate(rq, "end"));
+        List<ScoreDetail> dischargeList = performance.queryDischargeDetail(params);
+        List<ScoreDetail> careList = performance.queryNurseCareDetail(params);
+        ExcelWriter excelWriter = null;
+        try{
+            excelWriter = EasyExcel.write(response.getOutputStream(), ScoreDetail.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet(0, "出院").build();
+            excelWriter.write(dischargeList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(1, "核心").build();
+            excelWriter.write(careList, writeSheet);
+        } finally {
+            if(excelWriter != null){
+                excelWriter.finish();
+            }
+        }
     }
 }

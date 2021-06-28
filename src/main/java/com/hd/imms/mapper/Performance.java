@@ -4,10 +4,7 @@ package com.hd.imms.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hd.imms.entity.performance.BillDetail;
-import com.hd.imms.entity.performance.BillDetailQuery;
-import com.hd.imms.entity.performance.DeptScore;
-import com.hd.imms.entity.performance.DeptVsClinic;
+import com.hd.imms.entity.performance.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -35,4 +32,13 @@ public interface Performance {
     // 查询科室手术积分
     List<BillDetail> queryDeptOperationScoreDetail(Map<String, Object> params);
     IPage<BillDetail> queryDoctorScoreByPage(Page page, @Param("rq") String rq, @Param("ksmc") String ksmc);
+    // 科室明细
+    List<ScoreDetail> queryDeptOperationDetail(Map<String, Object> params);
+    List<ScoreDetail> queryDeptLabDetail(Map<String, Object> params);
+    List<ScoreDetail> queryDeptTreatDetail(Map<String, Object> params);
+    List<ScoreDetail> queryDeptExecuteDetail(Map<String, Object> params);
+    List<ScoreDetail> queryDeptRecoveryDetail(Map<String, Object> params);
+    //护士
+    List<ScoreDetail> queryDischargeDetail(Map<String, Object> params);
+    List<ScoreDetail> queryNurseCareDetail(Map<String, Object> params);
 }

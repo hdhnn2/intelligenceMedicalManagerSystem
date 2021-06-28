@@ -1,26 +1,25 @@
 package com.hd.imms.performance.controller;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.entity.common.DepartmentDictionary;
-import com.hd.imms.entity.common.SystemParameterBean;
-import com.hd.imms.entity.performance.BillDetail;
-import com.hd.imms.entity.performance.BillDetailQuery;
-import com.hd.imms.entity.performance.DeptScore;
-import com.hd.imms.entity.performance.DeptVsClinic;
+import com.hd.imms.entity.performance.*;
 import com.hd.imms.performance.bean.DeptCoefficient;
 import com.hd.imms.performance.service.PerformanceService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,4 +250,50 @@ public class PerformanceController {
         retJSON.put("data", page);
         return retJSON;
     }
+
+    @PostMapping("/deptCoefficient/exportDeptDetail")
+    public void exportDeptDetail(@RequestBody BillDetailQuery obj, HttpServletResponse response){
+        log.error("export: "+obj.toString());
+        // 这里 需要指定写用哪个class去写，然后写到第一个sheet，名字为模板 然后文件流会自动关闭
+        // 如果这里想使用03 则 传入excelType参数即可
+        // EasyExcel.write(fileName, ScoreDetail.class).sheet("模板").doWrite(list);
+        // String key = DateUtil.format(new Date(), "yyyy-MM-dd-HH-mm-ss");
+        // 配置文件下载
+        //response.setHeader("content-type", "application/octet-stream");
+        //response.setContentType("application/octet-stream");
+        //ExcelUtil.writeExcel(response, excelDtos, key, "sheet1", new ExcelScoreDto());
+
+        log.error("exportDeptDetail: "+obj.toString());
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        String fileName = null;
+        try {
+            String lx = obj.getLx();
+            switch (lx){
+                case "1":
+                    fileName = "科室医生明细";
+                    break;
+                case "2":
+                    fileName = "护士明细";
+                    break;
+                case "3":
+                    fileName = "医技明细";
+                    break;
+                case "4":
+                    fileName = "医生得分明细";
+                    break;
+            }
+            fileName = URLEncoder.encode(fileName+obj.getRq(), "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+            response.setHeader("FileName", fileName + ".xlsx");
+            response.setHeader("Access-Control-Expose-Headers", "FileName");
+            performanceService.downLoadExcel(obj, response);
+        } catch (UnsupportedEncodingException e) {
+            log.error("exportDeptDetail: "+e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("exportDeptDetail: "+e.toString());
+        }
+    }
+
 }
