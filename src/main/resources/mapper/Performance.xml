@@ -64,7 +64,7 @@
         and b1.class_on_reckoning=d.class_code(+)
         and b1.billing_date_time >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
         and b1.billing_date_time &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
-        and c.branch_code='01'
+        and regexp_like(b1.ordered_by, '^01')
         group by c.dept_code,c.dept_name,b1.class_on_reckoning,d.class_name
         ORDER BY c.dept_code,b1.class_on_reckoning
     </select>
@@ -80,7 +80,7 @@
         and b1.class_on_reckoning=d.class_code(+)
         and b1.billing_date_time >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
         and b1.billing_date_time &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
-        and c.branch_code='01'
+       and regexp_like(b1.performed_by, '^0[1-6]')
         group by c.dept_code,c.dept_name,b1.class_on_reckoning,d.class_name
         ORDER BY c.dept_code,b1.class_on_reckoning
     </select>
@@ -96,7 +96,7 @@
         left join reck_item_class_dict d on t.class_on_reckoning=d.class_code
         where  t.visit_date >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
         and t.visit_date &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
-        and c.branch_code='01'
+        and regexp_like(b1.ordered_by_dept, '^0[1-6]')
         group by c.dept_code,c.dept_name,t.class_on_reckoning,d.class_name
         ORDER BY c.dept_code,t.class_on_reckoning
     </select>
@@ -112,7 +112,7 @@
         and b1.class_on_reckoning=d.class_code(+)
         and b1.visit_date >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
         and b1.visit_date &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
-        and c.branch_code='01'
+        and regexp_like(b1.performed_by, '^0[1-6]')
         group by c.dept_code,c.dept_name,b1.class_on_reckoning,d.class_name
         ORDER BY c.dept_code,b1.class_on_reckoning
     </select>
