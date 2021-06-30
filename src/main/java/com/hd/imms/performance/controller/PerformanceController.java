@@ -1,16 +1,17 @@
 package com.hd.imms.performance.controller;
 
-import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hd.imms.entity.common.DepartmentDictionary;
-import com.hd.imms.entity.performance.*;
+import com.hd.imms.entity.performance.BillDetail;
+import com.hd.imms.entity.performance.BillDetailQuery;
+import com.hd.imms.entity.performance.DeptScore;
+import com.hd.imms.entity.performance.DeptVsClinic;
 import com.hd.imms.performance.bean.DeptCoefficient;
 import com.hd.imms.performance.service.PerformanceService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.hd.imms.common.security.GrantedAuthorityImpl;
 import com.hd.imms.common.security.JwtAuthenticatioToken;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,7 +43,7 @@ public class JwtTokenUtils implements Serializable {
     /**
      * 有效期30分钟
      */
-    private static final long EXPIRE_TIME = 30 * 1000;
+    private static final long EXPIRE_TIME = 30 * 60 * 1000;
 
     /**
      * 生成令牌
@@ -136,7 +137,11 @@ public class JwtTokenUtils implements Serializable {
         Claims claims;
         try {
             claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-        } catch (Exception e) {
+        } catch (ExpiredJwtException e) {
+            log.error("JwtTokenUtils ExpiredJwtException:"+e);
+            claims = e.getClaims();
+        }catch (Exception e) {
+            log.error("JwtTokenUtils Exception:"+e);
             claims = null;
         }
         return claims;
@@ -180,8 +185,10 @@ public class JwtTokenUtils implements Serializable {
         try {
             Claims claims = getClaimsFromToken(token);
             Date expiration = claims.getExpiration();
-            return expiration.before(new Date());
+            return new Date(System.currentTimeMillis()).after(expiration);
+            //return expiration.before(new Date());
         } catch (Exception e) {
+            log.error("JwtTokenUtils isTokenExpired:"+e);
             return false;
         }
     }
