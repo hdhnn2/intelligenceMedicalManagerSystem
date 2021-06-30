@@ -39,6 +39,14 @@ public interface Performance {
     List<ScoreDetail> queryDeptExecuteDetail(Map<String, Object> params);
     List<ScoreDetail> queryDeptRecoveryDetail(Map<String, Object> params);
     //护士
-    List<ScoreDetail> queryDischargeDetail(Map<String, Object> params);
+    List<Discharge> queryDischargeDetail(Map<String, Object> params);
     List<ScoreDetail> queryNurseCareDetail(Map<String, Object> params);
+    List<ScoreDetail> queryMedicalLabDetail(Map<String, Object> params);
+    // 医生
+    List<Outpatient> queryDoctorOutpDetail(Map<String, Object> params);
+    List<DoctScore> queryDoctorOperDetail(Map<String, Object> params);
+    List<DoctScore> queryDoctorLabDetail(Map<String, Object> params);
+    List<DoctScore> queryDoctorTreatDetail(Map<String, Object> params);
+    List<DoctScore> queryDoctorExecuteDetail(Map<String, Object> params);
+    List<DoctScore> queryDoctorRecoveryDetail(Map<String, Object> params);
 }

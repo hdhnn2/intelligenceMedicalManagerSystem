@@ -11,12 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.hd.imms.common.security.GrantedAuthorityImpl;
 import com.hd.imms.common.security.JwtAuthenticatioToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+@Slf4j
 public class JwtTokenUtils implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -90,6 +92,7 @@ public class JwtTokenUtils implements Serializable {
         Authentication authentication = null;
         // 获取请求携带的令牌
         String token = JwtTokenUtils.getToken(request);
+        log.error("getAuthenticationeFromToken token: "+token);
         if(token != null) {
             // 请求令牌不能为空
             if(SecurityUtils.getAuthentication() == null) {

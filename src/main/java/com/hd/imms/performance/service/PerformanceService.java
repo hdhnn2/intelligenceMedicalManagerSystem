@@ -319,10 +319,10 @@ public class PerformanceService {
                 downLoadNurseDetail(obj, response);
                 break;
             case "3":
-
+                downLoadMedLabDetail(obj, response);
                 break;
             case "4":
-
+                downLoadDoctorDetail(obj, response);
                 break;
         }
     }
@@ -370,7 +370,7 @@ public class PerformanceService {
         Map<String, Object> params = new HashMap<>();
         params.put("kssj", getCalulateDate(rq, "start"));
         params.put("jssj", getCalulateDate(rq, "end"));
-        List<ScoreDetail> dischargeList = performance.queryDischargeDetail(params);
+        List<Discharge> dischargeList = performance.queryDischargeDetail(params);
         List<ScoreDetail> careList = performance.queryNurseCareDetail(params);
         ExcelWriter excelWriter = null;
         try{
@@ -379,6 +379,65 @@ public class PerformanceService {
             excelWriter.write(dischargeList, writeSheet);
             writeSheet = EasyExcel.writerSheet(1, "核心").build();
             excelWriter.write(careList, writeSheet);
+        } finally {
+            if(excelWriter != null){
+                excelWriter.finish();
+            }
+        }
+    }
+    /**
+     * 功能：医技科室得分明细
+     * @date 2021-06-07
+     * @return
+     */
+    public void downLoadMedLabDetail(BillDetailQuery obj, HttpServletResponse response) throws IOException {
+        String rq = obj.getRq();
+        Map<String, Object> params = new HashMap<>();
+        params.put("kssj", getCalulateDate(rq, "start"));
+        params.put("jssj", getCalulateDate(rq, "end"));
+        List<ScoreDetail> list = performance.queryMedicalLabDetail(params);
+        ExcelWriter excelWriter = null;
+        try{
+            excelWriter = EasyExcel.write(response.getOutputStream(), ScoreDetail.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet(0, "核心").build();
+            excelWriter.write(list, writeSheet);
+        } finally {
+            if(excelWriter != null){
+                excelWriter.finish();
+            }
+        }
+    }
+    /**
+     * 功能：计算科室得分明细
+     * @date 2021-06-07
+     * @return
+     */
+    public void downLoadDoctorDetail(BillDetailQuery obj, HttpServletResponse response) throws IOException {
+        String rq = obj.getRq();
+        Map<String, Object> params = new HashMap<>();
+        params.put("kssj", getCalulateDate(rq, "start"));
+        params.put("jssj", getCalulateDate(rq, "end"));
+        List<Outpatient> outpatientListList = performance.queryDoctorOutpDetail(params);
+        List<DoctScore> operationList = performance.queryDoctorOperDetail(params);
+        List<DoctScore> labList = performance.queryDoctorLabDetail(params);
+        List<DoctScore> treatList = performance.queryDoctorTreatDetail(params);
+        List<DoctScore> deptExecuteList = performance.queryDoctorExecuteDetail(params);
+        List<DoctScore> recoveryList = performance.queryDoctorRecoveryDetail(params);
+        ExcelWriter excelWriter = null;
+        try{
+            excelWriter = EasyExcel.write(response.getOutputStream(), DoctScore.class).build();
+            WriteSheet writeSheet = EasyExcel.writerSheet(0, "手术").build();
+            excelWriter.write(operationList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(1, "非核心").build();
+            excelWriter.write(labList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(2, "核心").build();
+            excelWriter.write(treatList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(3, "本科室执行").build();
+            excelWriter.write(deptExecuteList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(4, "康复").build();
+            excelWriter.write(recoveryList, writeSheet);
+            writeSheet = EasyExcel.writerSheet(5, "门诊").build();
+            excelWriter.write(outpatientListList, writeSheet);
         } finally {
             if(excelWriter != null){
                 excelWriter.finish();
