@@ -231,11 +231,10 @@ public class PerformanceController {
     @PostMapping(value = "/deptCoefficient/queryDeptScoreDetailByType")
     public JSONObject queryDeptScoreDetailByType(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
         log.error("queryDeptScoreDetailByType DeptScore: "+obj.toString());
-        List<BillDetail> list = performanceService.queryDeptScoreDetailByType(obj);
-        JSONArray ret = (JSONArray) JSON.toJSON(list);
+        IPage<BillDetail> page = performanceService.queryDeptScoreDetailByType(obj);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
-        retJSON.put("data", ret);
+        retJSON.put("data", page);
         return retJSON;
     }
     /**

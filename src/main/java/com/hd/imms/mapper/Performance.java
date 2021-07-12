@@ -30,7 +30,7 @@ public interface Performance {
     IPage<BillDetail> selectPageBillDetail1(@Param("page") Page page);
 
     // 查询科室手术积分
-    List<BillDetail> queryDeptOperationScoreDetail(Map<String, Object> params);
+    IPage<BillDetail> queryDeptOperationScoreByPage(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("orderBy")String ksmc);
     IPage<BillDetail> queryDoctorScoreByPage(Page page, @Param("rq") String rq, @Param("ksmc") String ksmc);
     // 科室明细
     List<ScoreDetail> queryDeptOperationDetail(Map<String, Object> params);

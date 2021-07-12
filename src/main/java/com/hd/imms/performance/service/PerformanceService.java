@@ -239,27 +239,27 @@ public class PerformanceService {
     }
 
     // 查询科室手术积分
-    public List<BillDetail> queryDeptScoreDetailByType(BillDetailQuery obj){
+    public IPage<BillDetail> queryDeptScoreDetailByType(BillDetailQuery obj){
         Map<String,Object> params = new HashMap<String,Object>();
         String rq = obj.getRq();
-        params.put("kssj", getCalulateDate(rq, "start"));
-        params.put("jssj", getCalulateDate(rq, "end"));
+        String kssj = getCalulateDate(rq, "start");
+        String jssj = getCalulateDate(rq, "end");
         //当前用户所在科室
-        String userDept = getUserDept();
-        params.put("orderBy", userDept);
+        String orderBy = getUserDept();
         if(StringUtils.equals(obj.getLx(), "1")){
-            return queryDeptOperationScoreDetail(params);
+            return queryDeptOperationScoreDetail(kssj, jssj, orderBy);
         }
         return null;
     }
     // 查询科室手术积分
-    public List<BillDetail> queryDeptOperationScoreDetail(Map<String,Object> params){
-        List<BillDetail> list = performance.queryDeptOperationScoreDetail(params);
-        return list;
+    public IPage<BillDetail> queryDeptOperationScoreDetail(String kssj, String jssj, String orderBy){
+        Page<BillDetail> page = new Page<>();
+        IPage<BillDetail> userIPage = performance.queryDeptOperationScoreByPage(page, kssj, jssj, orderBy);
+        return userIPage;
     }
     public IPage<BillDetail> selectPageBillDetail() {
 
-        Page<BillDetail> page = new Page<>(1, 5);
+        Page<BillDetail> page = new Page<>();
         IPage<BillDetail> userIPage = performance.selectPageBillDetail1(page);
 
         return userIPage;

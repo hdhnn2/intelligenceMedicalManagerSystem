@@ -96,7 +96,7 @@
         left join reck_item_class_dict d on t.class_on_reckoning=d.class_code
         where  t.visit_date >= to_date(#{kssj}, 'yyyy-mm-dd hh24:mi:ss')
         and t.visit_date &lt;= to_date(#{jssj}, 'yyyy-mm-dd hh24:mi:ss')
-        and regexp_like(b1.ordered_by_dept, '^0[1-6]')
+        and regexp_like(a.ordered_by_dept, '^0[1-6]')
         group by c.dept_code,c.dept_name,t.class_on_reckoning,d.class_name
         ORDER BY c.dept_code,t.class_on_reckoning
     </select>
@@ -131,7 +131,7 @@
         group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
     </select>
     <!-- 科室手术查询 -->
-    <select id="queryDeptOperationScoreDetail" resultType="com.hd.imms.entity.performance.BillDetail">
+    <select id="queryDeptOperationScoreByPage" resultType="com.hd.imms.entity.performance.BillDetail">
         select ibd.item_class,ibd.item_code,ibd.item_name,round(ibd.item_price/9.1, 2) as jf,sum(ibd.amount) as amount,sum(round(ibd.costs/9.1, 2)) as zjf,'zy' as lx
         from  inp_bill_detail ibd
         left join dept_dict a1 on ibd.ordered_by=a1.dept_code
@@ -139,7 +139,7 @@
         ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and ((ibd.item_class='F' OR (ibd.item_code like '32%' and ibd.item_class IN ('D','E'))))
-        and ibd.ordered_by ='#{orderBy}'
+        and ibd.ordered_by = #{orderBy}
         group by ibd.item_class,ibd.item_code,ibd.item_name,ibd.item_price
         union all
         select d11.item_class,d11.item_code,d11.item_name,round(d11.item_price/9.1, 2) as jf,sum(d11.amount) as amount,sum(round(d11.costs/9.1, 2)) as zjf,'mz' as lx
@@ -151,7 +151,7 @@
         d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and (d11.item_class='F' OR (d11.item_code like '32%' and d11.item_class IN ('D','E')))
-        and t11.ksdm ='#{orderBy}'
+        and t11.ksdm = #{orderBy}
         group by d11.item_class,d11.item_code,d11.item_name,d11.item_price
     </select>
     <!-- 查询医生个人得分列表2021-06-21 -->
