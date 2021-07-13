@@ -132,27 +132,29 @@
     </select>
     <!-- 科室手术查询 -->
     <select id="queryDeptOperationScoreByPage" resultType="com.hd.imms.entity.performance.BillDetail">
-        select ibd.item_class,ibd.item_code,ibd.item_name,round(ibd.item_price/9.1, 2) as jf,sum(ibd.amount) as amount,sum(round(ibd.costs/9.1, 2)) as zjf,'zy' as lx
+        select ibd.item_class,a2.class_name,ibd.item_code,ibd.item_name,round(ibd.item_price/9.1, 2) as jf,sum(ibd.amount) as sl,sum(round(ibd.costs/9.1, 2)) as zfz,'zy' as lx
         from  inp_bill_detail ibd
         left join dept_dict a1 on ibd.ordered_by=a1.dept_code
+        left join bill_item_class_dict a2 on ibd.item_class=a2.class_code
         where
         ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and ((ibd.item_class='F' OR (ibd.item_code like '32%' and ibd.item_class IN ('D','E'))))
         and ibd.ordered_by = #{orderBy}
-        group by ibd.item_class,ibd.item_code,ibd.item_name,ibd.item_price
+        group by ibd.item_class,a2.class_name,ibd.item_code,ibd.item_name,ibd.item_price
         union all
-        select d11.item_class,d11.item_code,d11.item_name,round(d11.item_price/9.1, 2) as jf,sum(d11.amount) as amount,sum(round(d11.costs/9.1, 2)) as zjf,'mz' as lx
+        select d11.item_class,a2.class_name,d11.item_code,d11.item_name,round(d11.item_price/9.1, 2) as jf,sum(d11.amount) as amount,sum(round(d11.costs/9.1, 2)) as zjf,'mz' as lx
         from xjx_zyks_vs_mz t11
         join outp_order_desc c11 on t11.mzdm=c11.ordered_by_dept
         join outp_bill_items d11 on c11.visit_date=d11.visit_date and c11.visit_no=d11.visit_no
         and c11.rcpt_no=d11.rcpt_no
+        left join bill_item_class_dict a2 on d11.item_class=a2.class_code
         where
         d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and (d11.item_class='F' OR (d11.item_code like '32%' and d11.item_class IN ('D','E')))
         and t11.ksdm = #{orderBy}
-        group by d11.item_class,d11.item_code,d11.item_name,d11.item_price
+        group by d11.item_class,a2.class_name,d11.item_code,d11.item_name,d11.item_price
     </select>
     <!-- 查询医生个人得分列表2021-06-21 -->
     <select id="queryDoctorScoreByPage" resultType="com.hd.imms.entity.performance.DeptScore">
@@ -213,6 +215,9 @@
         and ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and ibd.billing_date_time &lt;=to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and regexp_like(ibd.item_class,'C|D')
+        <if test="orderBy != null and orderBy != ''">
+            and ibd.ordered_by = #{orderBy}
+        </if>
         group by ibd.ordered_by,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t.ksdm,dd.dept_name,a.class_name,d.item_code,d.item_name,
@@ -227,6 +232,9 @@
         and d.visit_date &lt;=to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and nvl(t.tybz,'0')='0'
         and regexp_like(D.item_class,'C|D')
+        <if test="orderBy != null and orderBy != ''">
+            and t.ksdm = #{orderBy}
+        </if>
         group by t.ksdm,dd.dept_name,a.class_name,d.item_code,d.item_name
         ) aa
         order by aa.ksdm,aa.class_name,aa.item_code
@@ -242,6 +250,9 @@
         where regexp_like(ibd.item_class,'E|J|K|L|Z')
         and ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        <if test="orderBy != null and orderBy != ''">
+            and ibd.ordered_by = #{orderBy}
+        </if>
         group by ibd.ordered_by,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
@@ -256,6 +267,9 @@
         and d11.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and nvl(t11.tybz,'0')='0'
+        <if test="orderBy != null and orderBy != ''">
+            and t11.ksdm = #{orderBy}
+        </if>
         group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
         ) aa
         order by aa.ksdm,aa.class_name,aa.item_code
@@ -275,6 +289,9 @@
         and not exists (select aa.xmdm from xjx_xm_special aa where lx='0' and ibd.item_code=aa.xmdm)
         and regexp_like(ibd.item_class, 'C|D|G')
         AND regexp_like(ibd.performed_by,'^01')
+        <if test="orderBy != null and orderBy != ''">
+            and ibd.ordered_by = #{orderBy}
+        </if>
         group by F_XJX_GET_DEPTCODE(ibd.performed_by),dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
@@ -290,6 +307,9 @@
         and not exists (select aa.xmdm from xjx_xm_special aa where lx='0' and d11.item_code=aa.xmdm)
         and regexp_like(d11.item_class, '[CDG]')
         AND regexp_like(t11.ksdm,'^01')
+        <if test="orderBy != null and orderBy != ''">
+            and t11.ksdm = #{orderBy}
+        </if>
         group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
         ) aa
         order by aa.ksdm,aa.class_name,aa.item_code
@@ -308,6 +328,9 @@
         and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and ibd.item_code in (select aa.xmdm from xjx_xm_special aa where lx='0')
         and ibd.ordered_by not in ('012801','012901')
+        <if test="orderBy != null and orderBy != ''">
+            and ibd.ordered_by = #{orderBy}
+        </if>
         group by ibd.ordered_by,a1.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
@@ -323,6 +346,9 @@
         and d11.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and d11.item_code in (select aa.xmdm from xjx_xm_special aa where lx='0')
         and t11.ksdm not in ('012801','012901')
+        <if test="orderBy != null and orderBy != ''">
+            and t11.ksdm = #{orderBy}
+        </if>
         group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
         ) aa
         order by aa.ksdm,aa.class_name,aa.item_code

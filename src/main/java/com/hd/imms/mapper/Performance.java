@@ -31,6 +31,10 @@ public interface Performance {
 
     // 查询科室手术积分
     IPage<BillDetail> queryDeptOperationScoreByPage(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("orderBy")String ksmc);
+    IPage<BillDetail> queryDeptLabDetail(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("orderBy")String ksmc);
+    IPage<BillDetail> queryDeptTreatDetail(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("orderBy")String ksmc);
+    IPage<BillDetail> queryDeptExecuteDetail(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("orderBy")String ksmc);
+    IPage<BillDetail> queryDeptRecoveryDetail(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("orderBy")String ksmc);
     IPage<BillDetail> queryDoctorScoreByPage(Page page, @Param("rq") String rq, @Param("ksmc") String ksmc);
     // 科室明细
     List<ScoreDetail> queryDeptOperationDetail(Map<String, Object> params);

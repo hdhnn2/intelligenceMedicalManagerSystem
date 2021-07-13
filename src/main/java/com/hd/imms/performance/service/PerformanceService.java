@@ -244,18 +244,31 @@ public class PerformanceService {
         String rq = obj.getRq();
         String kssj = getCalulateDate(rq, "start");
         String jssj = getCalulateDate(rq, "end");
+        Page<BillDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
         //当前用户所在科室
-        String orderBy = getUserDept();
+        //String orderBy = getUserDept();
+        String orderBy = "010201";
         if(StringUtils.equals(obj.getLx(), "1")){
-            return queryDeptOperationScoreDetail(kssj, jssj, orderBy);
+            // 科室核心
+            return performance.queryDeptTreatDetail(page, kssj, jssj, orderBy);
         }
-        return null;
-    }
-    // 查询科室手术积分
-    public IPage<BillDetail> queryDeptOperationScoreDetail(String kssj, String jssj, String orderBy){
-        Page<BillDetail> page = new Page<>();
-        IPage<BillDetail> userIPage = performance.queryDeptOperationScoreByPage(page, kssj, jssj, orderBy);
-        return userIPage;
+        if(StringUtils.equals(obj.getLx(), "2")){
+            // 科室执行
+            return performance.queryDeptExecuteDetail(page, kssj, jssj, orderBy);
+        }
+        if(StringUtils.equals(obj.getLx(), "3")){
+            // 科室非核心
+            return performance.queryDeptLabDetail(page, kssj, jssj, orderBy);
+        }
+        if(StringUtils.equals(obj.getLx(), "4")){
+            // 科室手术
+            return performance.queryDeptOperationScoreByPage(page, kssj, jssj, orderBy);
+        }
+        if(StringUtils.equals(obj.getLx(), "5")){
+            // 科室康复项目
+            return performance.queryDeptRecoveryDetail(page, kssj, jssj, orderBy);
+        }
+        return page;
     }
     public IPage<BillDetail> selectPageBillDetail() {
 

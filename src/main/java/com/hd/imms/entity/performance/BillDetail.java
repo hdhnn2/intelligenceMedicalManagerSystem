@@ -24,4 +24,6 @@ public class BillDetail {
     private String hsxmmc;
     private Double fy;;
     private String lx;      //类型
+    private Double zfz;
+    private Double sl;
 }
