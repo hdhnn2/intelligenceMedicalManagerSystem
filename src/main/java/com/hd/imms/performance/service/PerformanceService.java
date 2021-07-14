@@ -292,7 +292,8 @@ public class PerformanceService {
         if(deptList != null && deptList.size()>0){
             userDept = deptList.get(0).getDeptCode();
         }
-        return userDept;
+        //护士以02结尾，替换成01
+        return userDept.substring(0,4)+"01";
     }
 
     /**
