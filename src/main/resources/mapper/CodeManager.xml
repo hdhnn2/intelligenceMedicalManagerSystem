@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hd.imms.mapper.zhjw.CodeManager">
+    <select id="queryCodeNjbAll" resultType="com.hd.imms.entity.zhjw.code.CodeNjb">
+        select njdm,njmc
+        from code_njb t
+        order by t.njdm
+    </select>
+    <select id="queryCodeZzmmAll" resultType="com.hd.imms.entity.zhjw.code.CodeZzmmb">
+        select zzmmdm,zzmmmc
+        from code_zzmmb t
+        order by t.zzmmdm
+    </select>
+    <select id="queryCodeZcbAll" resultType="com.hd.imms.entity.zhjw.code.CodeZcb">
+        select zcdm,zcmc
+        from CODE_ZCB t
+        order by t.zcdm
+    </select>
+    <select id="queryCodeXlbAll" resultType="com.hd.imms.entity.zhjw.code.CodeXlb">
+        select xldm,xlmc
+        from CODE_XLB t
+        order by t.xldm
+    </select>
+    <select id="queryCodeXlbAll" resultType="com.hd.imms.entity.zhjw.code.CodeXlb">
+        select xldm,xlmc
+        from CODE_XLB t
+        order by t.xldm
+    </select>
+</mapper>
