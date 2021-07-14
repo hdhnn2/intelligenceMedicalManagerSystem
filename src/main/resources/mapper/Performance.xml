@@ -407,6 +407,9 @@
         <if test="bqdm != null and bqdm != ''">
             and F_XJX_GET_DEPTCODE(ibd.performed_by)=#{bqdm}
         </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(ibd.item_name,#{xmmc})>0
+        </if>
         group by F_XJX_GET_DEPTCODE(ibd.performed_by),b.dept_name,ibd.item_class,a.class_name,ibd.item_code,ibd.item_name
         order by F_XJX_GET_DEPTCODE(ibd.performed_by)
     </select>
