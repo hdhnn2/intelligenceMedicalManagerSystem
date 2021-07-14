@@ -62,4 +62,15 @@ public class LoginController {
         log.error("login info roles: "+ret.toString());
         return HttpResult.ok(ret);
     }
+    /**
+     * 测试
+     */
+    @GetMapping(value = "/test")
+    public HttpResult test(HttpServletRequest request) throws IOException {
+        log.error("test start: ");
+        JSONObject ret = authorizeService.queryMenuByRole("003");
+        log.error("test over roles: "+ret.toString());
+        log.error("test over !--------------------------- ");
+        return HttpResult.ok(ret);
+    }
 }

@@ -65,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 分诊URL
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/zhjw/**").permitAll()
-                .antMatchers("/performance/**").permitAll()
+                .antMatchers("/test").permitAll()
                 // 其他所有请求需要身份认证
                 .anyRequest().authenticated();
         // 退出登录处理器

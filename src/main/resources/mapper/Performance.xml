@@ -218,6 +218,9 @@
         <if test="orderBy != null and orderBy != ''">
             and ibd.ordered_by = #{orderBy}
         </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(ibd.item_name,#{xmmc})>0
+        </if>
         group by ibd.ordered_by,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t.ksdm,dd.dept_name,a.class_name,d.item_code,d.item_name,
@@ -234,6 +237,9 @@
         and regexp_like(D.item_class,'C|D')
         <if test="orderBy != null and orderBy != ''">
             and t.ksdm = #{orderBy}
+        </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(d.item_name,#{xmmc})>0
         </if>
         group by t.ksdm,dd.dept_name,a.class_name,d.item_code,d.item_name
         ) aa
@@ -253,6 +259,9 @@
         <if test="orderBy != null and orderBy != ''">
             and ibd.ordered_by = #{orderBy}
         </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(ibd.item_name,#{xmmc})>0
+        </if>
         group by ibd.ordered_by,dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
@@ -269,6 +278,9 @@
         and nvl(t11.tybz,'0')='0'
         <if test="orderBy != null and orderBy != ''">
             and t11.ksdm = #{orderBy}
+        </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(d11.item_name,#{xmmc})>0
         </if>
         group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
         ) aa
@@ -292,6 +304,9 @@
         <if test="orderBy != null and orderBy != ''">
             and ibd.ordered_by = #{orderBy}
         </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(ibd.item_name,#{xmmc})>0
+        </if>
         group by F_XJX_GET_DEPTCODE(ibd.performed_by),dd.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
@@ -309,6 +324,9 @@
         AND regexp_like(t11.ksdm,'^01')
         <if test="orderBy != null and orderBy != ''">
             and t11.ksdm = #{orderBy}
+        </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(d11.item_name,#{xmmc})>0
         </if>
         group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
         ) aa
@@ -331,6 +349,9 @@
         <if test="orderBy != null and orderBy != ''">
             and ibd.ordered_by = #{orderBy}
         </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(ibd.item_name,#{xmmc})>0
+        </if>
         group by ibd.ordered_by,a1.dept_name,a.class_name,ibd.item_code,ibd.item_name
         union all
         select t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name,
@@ -348,6 +369,9 @@
         and t11.ksdm not in ('012801','012901')
         <if test="orderBy != null and orderBy != ''">
             and t11.ksdm = #{orderBy}
+        </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(d11.item_name,#{xmmc})>0
         </if>
         group by t11.ksdm,dd.dept_name,a.class_name,d11.item_code,d11.item_name
         ) aa

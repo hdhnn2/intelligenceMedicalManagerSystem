@@ -1,9 +1,11 @@
 package com.hd.imms.common.authorize.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.dao.AuthorizeDao;
+import com.hd.imms.entity.authorize.Menu;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.authorize.UserRole;
 import com.hd.imms.mapper.AuthUser;
@@ -86,6 +88,26 @@ public class AuthorizeService {
             }
         } catch (Exception e){
             log.error("queryUser err: "+e.getMessage());
+        }
+        ret.put("roles",arr);
+        return ret;
+    }
+    /**
+     * 查询用户角色
+     * @return
+     */
+    public JSONObject queryMenuByRole(String roleId){
+        JSONObject ret = new JSONObject();
+        JSONArray arr = new JSONArray();
+        try{
+            List<Menu> menuList = authUser.queryMenuByRole(roleId);
+            if(menuList != null){
+                for(Menu menu : menuList){
+                    arr.add(JSON.toJSONString(menu));
+                }
+            }
+        } catch (Exception e){
+            log.error("queryMenuByRole err: "+e.getMessage());
         }
         ret.put("roles",arr);
         return ret;

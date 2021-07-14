@@ -1,5 +1,6 @@
 package com.hd.imms.mapper;
 
+import com.hd.imms.entity.authorize.Menu;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.authorize.UserRole;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,4 +16,5 @@ public interface AuthUser {
      *  功能：查询用户角色
      */
     List<UserRole> queryUserRoleById(@Param("userId") String userName);
+    List<Menu> queryMenuByRole(@Param("roleId") String roleId);
 }
