@@ -14,4 +14,5 @@ public class BillDetailQuery {
     private String ksmc;      //科室名称
     private Integer current;
     private Integer size;
+    private String ckmxlx;  //查看明细类型
 }

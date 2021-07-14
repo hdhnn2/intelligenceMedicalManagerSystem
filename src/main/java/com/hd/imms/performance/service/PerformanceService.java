@@ -238,7 +238,7 @@ public class PerformanceService {
         return ret;
     }
 
-    // 查询科室手术积分
+    // 分类查询科室明细
     public IPage<BillDetail> queryDeptScoreDetailByType(BillDetailQuery obj){
         Map<String,Object> params = new HashMap<String,Object>();
         String rq = obj.getRq();
@@ -247,8 +247,7 @@ public class PerformanceService {
         String xmmc = obj.getXmmc();
         Page<BillDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
         //当前用户所在科室
-        //String orderBy = getUserDept();
-        String orderBy = "010201";
+        String orderBy = getUserDept();
         if(StringUtils.equals(obj.getLx(), "1")){
             // 科室核心
             return performance.queryDeptTreatDetail(page, kssj, jssj, orderBy, (xmmc != null ? xmmc.trim() : null));
@@ -453,5 +452,28 @@ public class PerformanceService {
                 excelWriter.finish();
             }
         }
+    }
+    // 出院人次
+    public IPage<Discharge> queryDischargeDetail(BillDetailQuery obj){
+        Map<String,Object> params = new HashMap<String,Object>();
+        String rq = obj.getRq();
+        String kssj = getCalulateDate(rq, "start");
+        String jssj = getCalulateDate(rq, "end");
+        Page<Discharge> page = new Page<>(obj.getCurrent(), obj.getSize());
+        //当前用户所在科室
+        String orderBy = getUserDept();
+        // 出院按病区
+        return performance.queryDischargeDetail(page, kssj, jssj, orderBy.substring(0,4) + "02");
+    }
+    // 项目明细
+    public IPage<ScoreDetail> queryNurseCareDetail(BillDetailQuery obj){
+        Map<String,Object> params = new HashMap<String,Object>();
+        String rq = obj.getRq();
+        String kssj = getCalulateDate(rq, "start");
+        String jssj = getCalulateDate(rq, "end");
+        String xmmc = obj.getXmmc();
+        Page<ScoreDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
+        String orderBy = getUserDept();
+        return performance.queryNurseCareDetail(page, kssj, jssj, orderBy, (xmmc != null ? xmmc.trim() : null));
     }
 }

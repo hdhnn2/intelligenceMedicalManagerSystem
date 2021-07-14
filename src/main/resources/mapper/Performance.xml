@@ -381,12 +381,15 @@
     <!-- 科室护士得分明细start 2021-06-25 -->
     <select id="queryDischargeDetail" resultType="com.hd.imms.entity.performance.Discharge">
         select (select aa.dept_name from dept_dict aa where aa.dept_code=substr(d.discharge_ward_code,1,4) || '01') as dept_name,
-        d.patient_id,a.name,d.visit_id,to_char(d.discharge_date_time,'yyyy-mm-dd') as cysj
+        d.patient_id,a.name,d.visit_id,a.sex,to_char(d.discharge_date_time,'yyyy-mm-dd') as cysj
         from pat_visit d
         left join pat_master_index a on d.patient_id=a.patient_id
         where d.discharge_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and d.discharge_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and d.discharge_ward_code like '01%'
+        <if test="bqdm != null and bqdm != ''">
+            and d.discharge_ward_code= #{bqdm}
+        </if>
         order by d.discharge_ward_code,d.discharge_date_time
     </select>
     <select id="queryNurseCareDetail" resultType="com.hd.imms.entity.performance.ScoreDetail">
@@ -401,6 +404,9 @@
         and (case when (ibd.item_code like '32%' and ibd.item_class IN ('D','E')) or ibd.item_class='F' then '1'  else '0' end)='0'
         and not exists (select aa.xmdm from xjx_xm_special aa where lx='0' and ibd.item_code=aa.xmdm)
         and regexp_like(ibd.performed_by, '^01')
+        <if test="bqdm != null and bqdm != ''">
+            and F_XJX_GET_DEPTCODE(ibd.performed_by)=#{bqdm}
+        </if>
         group by F_XJX_GET_DEPTCODE(ibd.performed_by),b.dept_name,ibd.item_class,a.class_name,ibd.item_code,ibd.item_name
         order by F_XJX_GET_DEPTCODE(ibd.performed_by)
     </select>

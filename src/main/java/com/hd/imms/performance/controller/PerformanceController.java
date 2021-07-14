@@ -5,13 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hd.imms.entity.common.DepartmentDictionary;
-import com.hd.imms.entity.performance.BillDetail;
-import com.hd.imms.entity.performance.BillDetailQuery;
-import com.hd.imms.entity.performance.DeptScore;
-import com.hd.imms.entity.performance.DeptVsClinic;
+import com.hd.imms.entity.performance.*;
 import com.hd.imms.performance.bean.DeptCoefficient;
 import com.hd.imms.performance.service.PerformanceService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -295,5 +293,24 @@ public class PerformanceController {
             log.error("exportDeptDetail: "+e.toString());
         }
     }
-
+    /**
+     * 查询护士明细
+     */
+    @PostMapping(value = "/deptCoefficient/queryNurseScoreDetailByType")
+    public JSONObject queryNurseScoreDetailByType(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
+        log.error("queryNurseScoreDetailByType DeptScore: "+obj.toString());
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        if(StringUtils.equals(obj.getCkmxlx(), "1")){
+            // 出院明细
+            IPage<Discharge> page = performanceService.queryDischargeDetail(obj);
+            retJSON.put("data", page);
+        }
+        if(StringUtils.equals(obj.getCkmxlx(), "2")){
+            // 项目
+            IPage<ScoreDetail> page = performanceService.queryNurseCareDetail(obj);
+            retJSON.put("data", page);
+        }
+        return retJSON;
+    }
 }
