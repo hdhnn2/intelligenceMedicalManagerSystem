@@ -427,6 +427,12 @@
         and ibd.billing_date_time>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and ibd.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and regexp_like(ibd.performed_by, '^02')
+        <if test="ksdm != null and ksdm != ''">
+            and ibd.performed_by = #{ksdm}
+        </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(ibd.item_name,#{xmmc})>0
+        </if>
         group by ibd.performed_by,a.dept_name,b.class_code,b.class_name,ibd.item_code,ibd.item_name
         union all
         select aa.performed_by as ksdm,a.dept_name,b.class_code,b.class_name,aa.item_code,aa.item_name,
@@ -438,6 +444,12 @@
         and aa.visit_date>=to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
         and aa.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and regexp_like(aa.performed_by, '^02')
+        <if test="ksdm != null and ksdm != ''">
+            and aa.performed_by = #{ksdm}
+        </if>
+        <if test="xmmc != null and xmmc != ''">
+            and instr(aa.item_name,#{xmmc})>0
+        </if>
         group by aa.performed_by,a.dept_name,b.class_code,b.class_name,aa.item_code,aa.item_name
         ) ab
       order by ab.ksdm,ab.class_code,ab.item_code

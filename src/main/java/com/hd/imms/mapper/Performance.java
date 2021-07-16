@@ -50,6 +50,7 @@ public interface Performance {
     IPage<ScoreDetail> queryNurseCareDetail(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("bqdm")String bqdm,@Param("xmmc")String xmmc);
     //医技
     List<ScoreDetail> queryMedicalLabDetail(Map<String, Object> params);
+    IPage<ScoreDetail> queryMedicalLabDetail(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("ksdm")String ksdm,@Param("xmmc")String xmmc);
     // 医生
     List<Outpatient> queryDoctorOutpDetail(Map<String, Object> params);
     List<DoctScore> queryDoctorOperDetail(Map<String, Object> params);

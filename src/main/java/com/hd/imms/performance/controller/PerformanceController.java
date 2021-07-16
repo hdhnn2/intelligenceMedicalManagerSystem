@@ -313,4 +313,16 @@ public class PerformanceController {
         }
         return retJSON;
     }
+    /**
+     * 查询医技明细
+     */
+    @PostMapping(value = "/deptCoefficient/queryMedicalLabDetail")
+    public JSONObject queryMedicalLabDetail(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
+        log.error("queryMedicalLabDetail DeptScore: "+obj.toString());
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        IPage<ScoreDetail> page = performanceService.queryMedicalLabDetail(obj);
+        retJSON.put("data", page);
+        return retJSON;
+    }
 }

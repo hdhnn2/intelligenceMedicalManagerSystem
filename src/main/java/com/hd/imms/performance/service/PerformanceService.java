@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 @Slf4j
@@ -292,8 +293,8 @@ public class PerformanceService {
         if(deptList != null && deptList.size()>0){
             userDept = deptList.get(0).getDeptCode();
         }
-        //护士以02结尾，替换成01
-        return userDept.substring(0,4)+"01";
+        //医技科室直接返回，护士以02结尾，替换成01
+        return userDept.startsWith("02") ? userDept : userDept.substring(0,4)+"01";
     }
 
     /**
@@ -476,5 +477,16 @@ public class PerformanceService {
         Page<ScoreDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
         String orderBy = getUserDept();
         return performance.queryNurseCareDetail(page, kssj, jssj, orderBy, (xmmc != null ? xmmc.trim() : null));
+    }
+    // 项目明细
+    public IPage<ScoreDetail> queryMedicalLabDetail(BillDetailQuery obj){
+        Map<String,Object> params = new HashMap<String,Object>();
+        String rq = obj.getRq();
+        String kssj = getCalulateDate(rq, "start");
+        String jssj = getCalulateDate(rq, "end");
+        String xmmc = obj.getXmmc();
+        Page<ScoreDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
+        String orderBy = getUserDept();
+        return performance.queryMedicalLabDetail(page, kssj, jssj, orderBy, (xmmc != null ? xmmc.trim() : null));
     }
 }
