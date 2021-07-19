@@ -3,11 +3,16 @@ package com.hd.imms.common.authorize.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.dao.AuthorizeDao;
 import com.hd.imms.entity.authorize.Menu;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.authorize.UserRole;
+import com.hd.imms.entity.performance.BillDetail;
+import com.hd.imms.entity.performance.ScoreDetail;
+import com.hd.imms.entity.performance.UserQuery;
 import com.hd.imms.mapper.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,15 +67,10 @@ public class AuthorizeService {
      * 查询用户
      * @return
      */
-    public List<User> queryUser(){
-        List<User> userList = new ArrayList<User>();
-        try{
-            //userList = authUser.getUserList();
-            userList.add(authUser.getUserById("admin"));
-        } catch (Exception e){
-            log.error("queryUser err: "+e.getMessage());
-        }
-        return userList;
+    public IPage<User> queryUser(UserQuery params){
+        Page<User> page = new Page<>(params.getCurrent(), params.getSize());
+        IPage<User> resutlPage =authUser.queryUserListByPage(page, params.getUserName());
+        return page;
     }
     /**
      * 查询用户角色

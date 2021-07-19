@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.hd.imms.common.authorize.bean.LoginBean;
 import com.hd.imms.common.authorize.service.AuthorizeService;
 import com.hd.imms.common.security.JwtAuthenticatioToken;
+import com.hd.imms.common.security.SysUserServiceImpl;
 import com.hd.imms.common.utils.HttpResult;
 import com.hd.imms.common.utils.JwtTokenUtils;
 import com.hd.imms.common.utils.SecurityUtils;
+import com.hd.imms.entity.authorize.User;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +27,8 @@ public class LoginController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private AuthorizeService authorizeService;
+    @Autowired
+    private SysUserServiceImpl userService;
 
     /**
      * 登录接口
@@ -59,6 +63,9 @@ public class LoginController {
         }
         //JSONObject ret = JSON.parseObject("{\"data\":{\"roles\":[\"admin\"],\"introduction\":\"I am a super administrator\",\"avatar\":\"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif\",\"name\":\"Super Admin\"}}");
         JSONObject ret = authorizeService.queryUserRoleById(userId);
+        // 查询用户基本信息
+        User user = userService.findByUsername(userId);
+        ret.put("name", user.getUserName());
         log.error("login info roles: "+ret.toString());
         return HttpResult.ok(ret);
     }

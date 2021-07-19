@@ -3,8 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hd.imms.mapper.AuthUser">
-    <select id="getUserList" resultType="com.hd.imms.entity.authorize.User">
-        select wid, user_id , user_name,sex, telephone, input_code, hospital_id, bz,password from v_auth_user
+    <select id="queryUserListByPage" resultType="com.hd.imms.entity.authorize.User">
+        select wid, user_id , user_name,sex, telephone, input_code, hospital_id, bz,password,email
+        from v_auth_user t where 1=1
+        <if test="userName != null and userName != ''">
+            and instr(t.user_name, #{userName})>0
+        </if>
     </select>
     <select id="getUserById" resultType="com.hd.imms.entity.authorize.User">
         select wid, user_id , user_name,sex, telephone, input_code, hospital_id, bz,password from v_auth_user where user_id=#{userId}

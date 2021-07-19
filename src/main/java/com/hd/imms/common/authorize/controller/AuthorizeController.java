@@ -3,9 +3,13 @@ package com.hd.imms.common.authorize.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.service.AuthorizeService;
 import com.hd.imms.entity.authorize.User;
+import com.hd.imms.entity.performance.BillDetailQuery;
+import com.hd.imms.entity.performance.Discharge;
+import com.hd.imms.entity.performance.UserQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -73,15 +77,13 @@ public class AuthorizeController {
     /**
      * 查询用户
      */
-    @GetMapping(value = "/queryUser")
-    public JSONObject queryUser( HttpServletRequest request) {
+    @PostMapping(value = "/queryUser")
+    public JSONObject queryUser( @RequestBody UserQuery obj, HttpServletRequest request) {
         log.error("queryUser start: ");
-        // 系统登录认证
-        List<User> userList = authorizeService.queryUser();
-        JSONArray ret = (JSONArray) JSON.toJSON(userList);
+        IPage<User> page = authorizeService.queryUser(obj);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
-        retJSON.put("data", ret);
+        retJSON.put("data", page);
         return retJSON;
     }
 }
