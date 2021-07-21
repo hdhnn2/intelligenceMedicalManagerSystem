@@ -6,6 +6,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.hd.imms.entity.authorize.Menu;
 import com.hd.imms.mapper.AuthUser;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,27 +27,21 @@ public class MenuService {
      * @return
      */
     public JSONArray queryMenuByRole(String roleId){
-        JSONObject ret = new JSONObject();
-        JSONArray arr = new JSONArray();
+        JSONArray childrenMenuArray = new JSONArray();
         try{
             // 查询角色顶级菜单
             List<Menu> menuList = authUser.queryTopMenuByRole(roleId);
             if(menuList != null){
-                JSONArray childrenMenuArray = new JSONArray();
                 for(Menu menu : menuList){
-                    JSONObject menuJson = new JSONObject();
                     JSONObject json = assetMenuJSON(menu);
                     //设置
-
                     childrenMenuArray.add(json);
-                    menuJson.put("children", childrenMenuArray);
-                    arr.add(menuJson);
                 }
             }
         } catch (Exception e){
             log.error("queryMenuByRole err: "+e.getMessage());
         }
-        return arr;
+        return childrenMenuArray;
     }
 
     public JSONObject assetMenuJSON(Menu menu){
@@ -72,13 +67,29 @@ public class MenuService {
         }
         return menuJson;
     }
+
+    /**
+     * 设置路由节点信息
+     * @param json
+     * @param menu
+     * @return
+     */
     private JSONObject setMenuJSONAttribute(JSONObject json,Menu menu){
         json.put("path", menu.getPath());
         json.put("component", menu.getComponent());
         json.put("name", menu.getName());
+        String redirect = menu.getRedirect();
+        if(StringUtils.isNotEmpty(redirect)){
+            json.put("redirect", redirect);
+        }
         //菜单名称
         JSONObject metaJson = new JSONObject();
         metaJson.put("title", menu.getTitle());
+        //路由图标
+        String icon = menu.getIcon();
+        if(StringUtils.isNotEmpty(icon)){
+            metaJson.put("icon", icon);
+        }
         json.put("meta", metaJson);
         return json;
     }

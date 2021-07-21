@@ -71,8 +71,6 @@ public class LoginController {
         JSONArray roles = ret.getJSONArray("roles");
         if(roles.size() > 0){
             String roleID = roles.getString(0);
-            log.error("roleID_________________________________"+roleID);
-            //authorizeService.queryMenuByRole("003");
             ret.put("menu", authorizeService.queryMenuByRole(roleID));
         }
         log.error("login info roles: "+ret.toString());
