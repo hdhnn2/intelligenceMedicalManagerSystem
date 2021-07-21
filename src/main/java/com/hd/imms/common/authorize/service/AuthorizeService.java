@@ -28,6 +28,9 @@ public class AuthorizeService {
     @Autowired
     AuthorizeDao authorizeDao;
 
+    @Autowired
+    private MenuService menuService;
+
     @Resource
     @Autowired
     AuthUser authUser;
@@ -96,20 +99,8 @@ public class AuthorizeService {
      * 查询用户角色
      * @return
      */
-    public JSONObject queryMenuByRole(String roleId){
-        JSONObject ret = new JSONObject();
-        JSONArray arr = new JSONArray();
-        try{
-            List<Menu> menuList = authUser.queryMenuByRole(roleId);
-            if(menuList != null){
-                for(Menu menu : menuList){
-                    arr.add(JSON.toJSONString(menu));
-                }
-            }
-        } catch (Exception e){
-            log.error("queryMenuByRole err: "+e.getMessage());
-        }
-        ret.put("roles",arr);
-        return ret;
+    public JSONArray queryMenuByRole(String roleId){
+        JSONArray arr = menuService.queryMenuByRole(roleId);
+        return arr;
     }
 }

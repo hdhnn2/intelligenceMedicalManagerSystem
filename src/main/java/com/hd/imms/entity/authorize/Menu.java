@@ -7,22 +7,39 @@ import lombok.Data;
 public class Menu {
     @JSONField(name = "wid")
     private String wid;
-    @JSONField(name = "path")
+    @JSONField(name = "path" , ordinal = 1)
     private String path;
     @JSONField(name = "icon")
     private String icon;
-    @JSONField(name = "component")
+    @JSONField(name = "component", ordinal = 2)
     private String component;
     @JSONField(name = "redirect")
     private String redirect;
-    @JSONField(name = "name")
+    @JSONField(name = "name", ordinal = 3)
     private String name;
-    @JSONField(name = "title")
+    @JSONField(name = "title", ordinal = 4)
     private String title;
     @JSONField(name = "nocache")
     private String nocache;
     @JSONField(name = "parentId")
     private String parentId;
-    @JSONField(name = "bz")
-    private String bz;
+
+    public Menu(String path) {
+        this.path = path;
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "wid='" + wid + '\'' +
+                ", path='" + path + '\'' +
+                ", icon='" + icon + '\'' +
+                ", component='" + component + '\'' +
+                ", redirect='" + redirect + '\'' +
+                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", nocache='" + nocache + '\'' +
+                ", parentId='" + parentId + '\'' +
+                '}';
+    }
 }

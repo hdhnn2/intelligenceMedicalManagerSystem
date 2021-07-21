@@ -16,9 +16,16 @@
     <select id="queryUserRoleById" resultType="com.hd.imms.entity.authorize.UserRole">
         select wid, user_id , role_id from v_AUTH_USER_ROLE where user_id=#{userId}
     </select>
-    <select id="queryMenuByRole" resultType="com.hd.imms.entity.authorize.Menu">
+    <!-- 查询角色的顶级菜单 -->
+    <select id="queryTopMenuByRole" resultType="com.hd.imms.entity.authorize.Menu">
         select t.* from AUTH_MENU T
         LEFT JOIN AUTH_ROLE_MENU A ON t.wid = a.menu_id
-        where a.role_id=#{roleId}
+        where a.role_id=#{roleId} and t.parent_id='-1'
+        order by t.px
+    </select>
+    <select id="queryChildrenMenuByID" resultType="com.hd.imms.entity.authorize.Menu">
+        select t.* from auth_menu t
+        where t.parent_id = #{menuId}
+        order by t.px
     </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.hd.imms.common.authorize.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hd.imms.common.authorize.bean.LoginBean;
 import com.hd.imms.common.authorize.service.AuthorizeService;
@@ -66,6 +67,14 @@ public class LoginController {
         // 查询用户基本信息
         User user = userService.findByUsername(userId);
         ret.put("name", user.getUserName());
+        //根据角色查询菜单210721
+        JSONArray roles = ret.getJSONArray("roles");
+        if(roles.size() > 0){
+            String roleID = roles.getString(0);
+            log.error("roleID_________________________________"+roleID);
+            //authorizeService.queryMenuByRole("003");
+            ret.put("menu", authorizeService.queryMenuByRole(roleID));
+        }
         log.error("login info roles: "+ret.toString());
         return HttpResult.ok(ret);
     }
@@ -75,9 +84,7 @@ public class LoginController {
     @GetMapping(value = "/test")
     public HttpResult test(HttpServletRequest request) throws IOException {
         log.error("test start: ");
-        JSONObject ret = authorizeService.queryMenuByRole("003");
-        log.error("test over roles: "+ret.toString());
         log.error("test over !--------------------------- ");
-        return HttpResult.ok(ret);
+        return HttpResult.ok(authorizeService.queryMenuByRole("003"));
     }
 }

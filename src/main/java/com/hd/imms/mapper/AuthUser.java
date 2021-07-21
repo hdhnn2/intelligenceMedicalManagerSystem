@@ -17,5 +17,6 @@ public interface AuthUser {
      *  功能：查询用户角色
      */
     List<UserRole> queryUserRoleById(@Param("userId") String userName);
-    List<Menu> queryMenuByRole(@Param("roleId") String roleId);
+    List<Menu> queryTopMenuByRole(@Param("roleId") String roleId);
+    List<Menu> queryChildrenMenuByID(@Param("menuId") String menuId);
 }
