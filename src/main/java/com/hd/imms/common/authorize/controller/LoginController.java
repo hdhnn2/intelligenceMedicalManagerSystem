@@ -83,6 +83,6 @@ public class LoginController {
     public HttpResult test(HttpServletRequest request) throws IOException {
         log.error("test start: ");
         log.error("test over !--------------------------- ");
-        return HttpResult.ok(authorizeService.queryMenuByRole("003"));
+        return HttpResult.ok(authorizeService.queryMenuTree());
     }
 }

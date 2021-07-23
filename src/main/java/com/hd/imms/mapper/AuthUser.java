@@ -2,12 +2,14 @@ package com.hd.imms.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hd.imms.entity.authorize.Menu;
+import com.hd.imms.entity.authorize.QueryBean;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.authorize.UserRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface AuthUser {
@@ -18,5 +20,8 @@ public interface AuthUser {
      */
     List<UserRole> queryUserRoleById(@Param("userId") String userName);
     List<Menu> queryTopMenuByRole(@Param("roleId") String roleId);
+    List<Menu> queryChildrenMenuByRole(@Param("roleId") String roleId, @Param("menuId") String menuId);
+    List<Menu> queryTopMenu();
     List<Menu> queryChildrenMenuByID(@Param("menuId") String menuId);
+    List<Menu> queryRoleLeafMenu(QueryBean obj);
 }

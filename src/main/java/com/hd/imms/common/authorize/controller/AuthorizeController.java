@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.service.AuthorizeService;
+import com.hd.imms.entity.authorize.Menu;
+import com.hd.imms.entity.authorize.QueryBean;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.performance.BillDetailQuery;
 import com.hd.imms.entity.performance.Discharge;
@@ -84,6 +86,29 @@ public class AuthorizeController {
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
         retJSON.put("data", page);
+        return retJSON;
+    }
+    /**
+     * 查询菜单
+     */
+    @GetMapping(value = "/queryMenuTree")
+    public JSONObject queryMenuTree(HttpServletRequest request) {
+        log.error("queryMenu start: ");
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", authorizeService.queryMenuTree());
+        return retJSON;
+    }
+    /**
+     * 查询角色菜单
+     */
+    @PostMapping(value = "/queryRoleLeafMenu")
+    public JSONObject queryRoleLeafMenu(@RequestBody QueryBean obj, HttpServletRequest request) {
+        log.error("queryRoleLeafMenu start: "+obj.toString());
+        List<Menu> list = authorizeService.queryRoleLeafMenu(obj);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", list);
         return retJSON;
     }
 }

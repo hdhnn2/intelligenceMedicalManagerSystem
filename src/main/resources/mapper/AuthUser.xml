@@ -23,9 +23,29 @@
         where a.role_id=#{roleId} and t.parent_id='-1'
         order by t.px
     </select>
+    <select id="queryChildrenMenuByRole" resultType="com.hd.imms.entity.authorize.Menu">
+        select t.* from auth_menu t
+        LEFT JOIN AUTH_ROLE_MENU A ON t.wid = a.menu_id
+        where a.role_id=#{roleId} and t.parent_id = #{menuId}
+        order by t.px
+    </select>
+    <!-- 菜单树 -->
+    <select id="queryTopMenu" resultType="com.hd.imms.entity.authorize.Menu">
+        select t.* from AUTH_MENU T
+        where t.parent_id='-1'
+        order by t.px
+    </select>
     <select id="queryChildrenMenuByID" resultType="com.hd.imms.entity.authorize.Menu">
         select t.* from auth_menu t
         where t.parent_id = #{menuId}
+        order by t.px
+    </select>
+    <!-- 角色叶子菜单 -->
+    <select id="queryRoleLeafMenu" resultType="com.hd.imms.entity.authorize.Menu" parameterType="com.hd.imms.entity.authorize.QueryBean">
+        select t.* from auth_menu t
+        left join auth_role_menu b on t.wid=b.menu_id
+        where b.role_id = #{roleId}
+        and not exists(select 1 from auth_menu a where t.wid=a.parent_id)
         order by t.px
     </select>
 </mapper>

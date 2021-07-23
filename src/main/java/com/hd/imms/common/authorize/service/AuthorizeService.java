@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.dao.AuthorizeDao;
 import com.hd.imms.entity.authorize.Menu;
+import com.hd.imms.entity.authorize.QueryBean;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.authorize.UserRole;
 import com.hd.imms.entity.performance.BillDetail;
@@ -96,11 +97,27 @@ public class AuthorizeService {
         return ret;
     }
     /**
-     * 查询用户角色
+     * 查询角色菜单
      * @return
      */
     public JSONArray queryMenuByRole(String roleId){
         JSONArray arr = menuService.queryMenuByRole(roleId);
         return arr;
+    }
+    /**
+     * 查询菜单树
+     * @date 2021-07-22
+     */
+    public JSONArray queryMenuTree(){
+        JSONArray arr = menuService.queryMenuTree();
+        return arr;
+    }
+    /**
+     * 查询菜单树
+     * @date 2021-07-22
+     */
+    public List<Menu> queryRoleLeafMenu(QueryBean obj){
+        List<Menu> list = authUser.queryRoleLeafMenu(obj);
+        return list;
     }
 }
