@@ -111,4 +111,16 @@ public class AuthorizeController {
         retJSON.put("data", list);
         return retJSON;
     }
+    /**
+     * 更新角色菜单
+     */
+    @PostMapping(value = "/updateRoleMenus")
+    public JSONObject updateRoleMenus(@RequestBody QueryBean bean, HttpServletRequest request) throws IOException {
+        log.debug("updateRoleMenus QueryBean: "+ bean.toString());
+        JSONObject ret = new JSONObject();
+        ret.put("code", 200);
+        ret.put("data", authorizeService.updateRoleMenus(bean));
+        log.error("updateRoleMenus end ");
+        return ret;
+    }
 }

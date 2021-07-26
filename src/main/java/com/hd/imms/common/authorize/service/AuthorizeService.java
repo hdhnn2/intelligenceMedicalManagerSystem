@@ -120,4 +120,12 @@ public class AuthorizeService {
         List<Menu> list = authUser.queryRoleLeafMenu(obj);
         return list;
     }
+    /**
+     * 更新角色菜单
+     * @return
+     */
+    public String updateRoleMenus(QueryBean bean){
+        String msg =authorizeDao.updateRoleMenus(bean);
+        return msg;
+    }
 }

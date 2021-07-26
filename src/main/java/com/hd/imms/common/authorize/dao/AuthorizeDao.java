@@ -1,11 +1,14 @@
 package com.hd.imms.common.authorize.dao;
 
 import com.hd.imms.common.authorize.bean.Role;
+import com.hd.imms.entity.authorize.QueryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.Transient;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -72,10 +75,25 @@ public class AuthorizeDao {
         String sql = "delete from AUTH_ROLE t where role_code=? ";
         Object[ ] args = {roleCode};
         int cnt = jdbcTemplate.update(sql, args);
-        if (cnt == 1){
-            return "";
-        }else{
-            return "err";
+        sql = "delete from auth_role_menu t where role_id=? ";
+        cnt = jdbcTemplate.update(sql, args);
+        return "";
+    }
+    /**
+     * 更新角色菜单
+     * @return
+     */
+    @Transactional
+    public String updateRoleMenus(QueryBean bean){
+        String sql = "delete from auth_role_menu t where role_id=? ";
+        Object[ ] args = {bean.getRoleId()};
+        int cnt = jdbcTemplate.update(sql, args);
+        String insertSQL = "insert into auth_role_menu(wid, menu_id, role_id) values(sys_guid(),?,?) ";
+        String[] menus = bean.getMenus();
+        for(int i=0; i<menus.length; i++){
+            Object[] insertArgs = {menus[i], bean.getRoleId()};
+            jdbcTemplate.update(insertSQL, insertArgs);
         }
+        return "1";
     }
 }
