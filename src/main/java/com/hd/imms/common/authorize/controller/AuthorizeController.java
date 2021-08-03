@@ -9,6 +9,7 @@ import com.hd.imms.common.authorize.service.AuthorizeService;
 import com.hd.imms.entity.authorize.Menu;
 import com.hd.imms.entity.authorize.QueryBean;
 import com.hd.imms.entity.authorize.User;
+import com.hd.imms.entity.authorize.UserRole;
 import com.hd.imms.entity.performance.BillDetailQuery;
 import com.hd.imms.entity.performance.Discharge;
 import com.hd.imms.entity.performance.UserQuery;
@@ -122,5 +123,29 @@ public class AuthorizeController {
         ret.put("data", authorizeService.updateRoleMenus(bean));
         log.error("updateRoleMenus end ");
         return ret;
+    }
+    /**
+     * 更新用户角色
+     */
+    @PostMapping(value = "/updateUserRole")
+    public JSONObject updateUserRole(@RequestBody QueryBean bean, HttpServletRequest request) throws IOException {
+        log.debug("updateUserRole QueryBean: "+ bean.toString());
+        JSONObject ret = new JSONObject();
+        ret.put("code", 200);
+        ret.put("data", authorizeService.updateUserRole(bean));
+        log.error("updateUserRole end ");
+        return ret;
+    }
+    /**
+     * 查询角色菜单
+     */
+    @PostMapping(value = "/queryUserRoleByID")
+    public JSONObject queryUserRoleByID(@RequestBody QueryBean obj, HttpServletRequest request) {
+        log.error("queryUserRoleByID start: "+obj.toString());
+        UserRole userRole = authorizeService.queryUserRoleByID(obj);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", userRole);
+        return retJSON;
     }
 }

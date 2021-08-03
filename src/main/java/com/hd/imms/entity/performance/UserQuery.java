@@ -7,4 +7,5 @@ public class UserQuery {
     private Integer current;
     private Integer size;
     private String userName;
+    private String sex;
 }

@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hd.imms.common.utils.SecurityUtils;
+import com.hd.imms.entity.common.CodeBean;
 import com.hd.imms.entity.common.DepartmentDictionary;
 import com.hd.imms.entity.common.SystemParameterBean;
 import com.hd.imms.entity.performance.*;
@@ -135,22 +136,6 @@ public class PerformanceService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(cal.getTime());
     }
-    public List<BillDetail> selectPageBillDetail(BillDetailQuery obj) {
-
-/*        Page<BillDetail> page = new Page<>(1, 5);
-        page.setOptimizeCountSql(false);
-        List<BillDetail> userIPage = performance.selectPageBillDetail(page);*/
-        Map<String,Object> params = new HashMap<String,Object>();
-        String[] jfrq = obj.getJfrq();
-        params.put("kssj", jfrq[0]+" 00:00:00");
-        params.put("jssj", jfrq[1]+" 23:59:59");
-        String xmmc = obj.getXmmc();
-        if(StringUtils.isNotEmpty(xmmc)){
-            params.put("xmmc", xmmc.trim());
-        }
-        List<BillDetail> list = performance.selectPageBillDetail(params);
-        return list;
-    }
     public SystemParameterBean getSysParmById(SystemParameterBean obj){
         SystemParameterBean ret = new SystemParameterBean();
         List<SystemParameterBean> list = commonMapper.querySystemParameter(obj);
@@ -271,10 +256,17 @@ public class PerformanceService {
         }
         return page;
     }
-    public IPage<BillDetail> selectPageBillDetail() {
-
-        Page<BillDetail> page = new Page<>();
-        IPage<BillDetail> userIPage = performance.selectPageBillDetail1(page);
+    public IPage<BillDetail> selectPageBillDetail(BillDetailQuery obj) {
+        Map<String,Object> params = new HashMap<String,Object>();
+        String[] jfrq = obj.getJfrq();
+        String kssj = jfrq[0]+" 00:00:00";
+        String jssj = jfrq[1]+" 23:59:59";
+        String xmmc = obj.getXmmc();
+        if(StringUtils.isNotEmpty(xmmc)){
+            params.put("xmmc", xmmc.trim());
+        }
+        Page<BillDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
+        IPage<BillDetail> userIPage = performance.selectPageBillDetail(page,kssj, jssj, xmmc);
 
         return userIPage;
     }
@@ -488,5 +480,13 @@ public class PerformanceService {
         Page<ScoreDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
         String orderBy = getUserDept();
         return performance.queryMedicalLabDetail(page, kssj, jssj, orderBy, (xmmc != null ? xmmc.trim() : null));
+    }
+    /**
+     * 功能：查询费用类别字典
+     * @date 2021-08-03
+     * @return
+     */
+    public List<CodeBean> queryAllBillItemClass(){
+        return commonMapper.queryAllBillItemClass();
     }
 }

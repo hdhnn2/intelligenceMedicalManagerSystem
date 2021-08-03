@@ -9,6 +9,9 @@
         <if test="userName != null and userName != ''">
             and instr(t.user_name, #{userName})>0
         </if>
+        <if test="sex != null and sex != ''">
+            and sex=#{sex}
+        </if>
     </select>
     <select id="getUserById" resultType="com.hd.imms.entity.authorize.User">
         select wid, user_id , user_name,sex, telephone, input_code, hospital_id, bz,password from v_auth_user where user_id=#{userId}

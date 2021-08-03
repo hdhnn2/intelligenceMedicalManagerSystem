@@ -73,7 +73,7 @@ public class AuthorizeService {
      */
     public IPage<User> queryUser(UserQuery params){
         Page<User> page = new Page<>(params.getCurrent(), params.getSize());
-        IPage<User> resutlPage =authUser.queryUserListByPage(page, params.getUserName());
+        IPage<User> resutlPage =authUser.queryUserListByPage(page, params.getUserName(), params.getSex());
         return page;
     }
     /**
@@ -84,7 +84,9 @@ public class AuthorizeService {
         JSONObject ret = new JSONObject();
         JSONArray arr = new JSONArray();
         try{
-            List<UserRole> userRoleList = authUser.queryUserRoleById(userId);
+            QueryBean obj = new QueryBean();
+            obj.setUserId(userId);
+            List<UserRole> userRoleList = authUser.queryUserRoleById(obj);
             if(userRoleList != null){
                 for(UserRole userRole : userRoleList){
                     arr.add(userRole.getRoleId());
@@ -127,5 +129,25 @@ public class AuthorizeService {
     public String updateRoleMenus(QueryBean bean){
         String msg =authorizeDao.updateRoleMenus(bean);
         return msg;
+    }
+    /**
+     * 更新用户角色
+     * @return
+     */
+    public String updateUserRole(QueryBean bean){
+        String msg =authorizeDao.updateUserRole(bean);
+        return msg;
+    }
+    /**
+     * 查询用户角色
+     * @return
+     */
+    public UserRole queryUserRoleByID(QueryBean obj){
+        UserRole userRole = null;
+        List<UserRole> userRoleList = authUser.queryUserRoleById(obj);
+        if(userRoleList != null && userRoleList.size()>0){
+            userRole = userRoleList.get(0);
+        }
+        return userRole;
     }
 }

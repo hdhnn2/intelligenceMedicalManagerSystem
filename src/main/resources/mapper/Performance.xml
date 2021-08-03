@@ -46,9 +46,8 @@
         and t.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
         and regexp_like(t.ordered_by,'^01\d{4}')
         <if test="xmmc != null and xmmc != ''">
-            and t.item_name like concat(concat('%',#{xmmc}),'%')
+            and instr(t.item_name,#{xmmc})>0
         </if>
-        and rownum &lt; 50
         group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
     </select>
     <!-- 住院开单费用 -->
@@ -117,19 +116,6 @@
         ORDER BY c.dept_code,b1.class_on_reckoning
     </select>
 
-    <!-- 查询费用test -->
-    <select id="selectPageBillDetail1" resultType="com.hd.imms.entity.performance.BillDetail">
-        select a.dept_name as ordered_by_dept_name,t.item_class,c.class_name,t.item_code,t.item_name,
-        round((t.item_price/9.1),2) as jf,sum(t.amount) as amount,round(sum((t.item_price/9.1)*t.amount),2) as zjf,t.ordered_by
-        from inp_bill_detail t
-        left join dept_dict a on t.ordered_by=a.dept_code
-        left join bill_item_class_dict c on t.item_class=c.class_code
-        where t.billing_date_time >= to_date('2021-05-21 00:00:00','yyyy-mm-dd hh24:mi:ss')
-        and t.billing_date_time &lt;= to_date('2021-05-22 00:00:00','yyyy-mm-dd hh24:mi:ss')
-        and regexp_like(t.ordered_by,'^01\d{4}')
-        and rownum &lt; 50
-        group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
-    </select>
     <!-- 科室手术查询 -->
     <select id="queryDeptOperationScoreByPage" resultType="com.hd.imms.entity.performance.BillDetail">
         select ibd.item_class,a2.class_name,ibd.item_code,ibd.item_name,round(ibd.item_price/9.1, 2) as jf,sum(ibd.amount) as sl,sum(round(ibd.costs/9.1, 2)) as zfz,'zy' as lx

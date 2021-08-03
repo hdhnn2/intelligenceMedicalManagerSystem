@@ -13,12 +13,12 @@ import java.util.Map;
 
 @Mapper
 public interface AuthUser {
-    IPage<User> queryUserListByPage(IPage page, @Param("userName")String userName);
+    IPage<User> queryUserListByPage(IPage page, @Param("userName")String userName, @Param("sex")String sex);
     User getUserById(@Param("userId") String userName);
     /**
      *  功能：查询用户角色
      */
-    List<UserRole> queryUserRoleById(@Param("userId") String userName);
+    List<UserRole> queryUserRoleById(QueryBean obj);
     List<Menu> queryTopMenuByRole(@Param("roleId") String roleId);
     List<Menu> queryChildrenMenuByRole(@Param("roleId") String roleId, @Param("menuId") String menuId);
     List<Menu> queryTopMenu();

@@ -96,4 +96,18 @@ public class AuthorizeDao {
         }
         return "1";
     }
+    /**
+     * 更新用户角色
+     * @return
+     */
+    @Transactional
+    public String updateUserRole(QueryBean bean){
+        String sql = "delete from auth_user_role t where user_id=? ";
+        Object[ ] args = {bean.getUserId()};
+        int cnt = jdbcTemplate.update(sql, args);
+        String insertSQL = "insert into auth_user_role(wid, user_id, role_id) values(sys_guid(),?,?) ";
+        Object[] insertArgs = {bean.getUserId(), bean.getRoleId()};
+        jdbcTemplate.update(insertSQL, insertArgs);
+        return "1";
+    }
 }

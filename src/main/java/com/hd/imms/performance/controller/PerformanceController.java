@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.hd.imms.entity.common.CodeBean;
 import com.hd.imms.entity.common.DepartmentDictionary;
 import com.hd.imms.entity.performance.*;
 import com.hd.imms.performance.bean.DeptCoefficient;
@@ -162,12 +163,11 @@ public class PerformanceController {
     public JSONObject queryBillDetail(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
         log.error("queryBillDetail: "+obj.toString());
         //page..isSearchCount(true);
-        IPage<BillDetail> page = performanceService.selectPageBillDetail();
+        IPage<BillDetail> page = performanceService.selectPageBillDetail(obj);
         log.error("queryBillDetail ret: "+page.toString());
-        //JSONArray ret = (JSONArray) JSON.toJSON(list);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
-        //retJSON.put("data", ret);
+        retJSON.put("data", page);
         return retJSON;
     }
 
@@ -187,14 +187,16 @@ public class PerformanceController {
     /**
      * 查询费用明细
      */
-    @PostMapping(value = "/deptCoefficient/queryDeptDict")
+    @PostMapping(value = "/deptCoefficient/queryDict")
     public JSONObject queryDeptDict(@RequestBody DepartmentDictionary obj, HttpServletRequest request) {
         log.error("queryDeptDict: "+obj.toString());
         List<DepartmentDictionary> list = performanceService.queryDeptDict(obj);
+        List<CodeBean> billItemClassList = performanceService.queryAllBillItemClass();
         JSONArray ret = (JSONArray) JSON.toJSON(list);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
-        retJSON.put("data", ret);
+        retJSON.put("deptList", list);
+        retJSON.put("billItemClassList", billItemClassList);
         return retJSON;
     }
 

@@ -19,15 +19,14 @@ public interface Performance {
     Map<String, Object> calNurseScore(Map<String, Object> params);
     Map<String, Object> calMedLabScore(Map<String, Object> params);
     Map<String, Object> calDoctorScoreDetail(Map<String, Object> params);
-    List<BillDetail> selectPageBillDetail(@Param("page") Page page, @Param("zyh") String zyh);
+    IPage<BillDetail> selectPageBillDetail(@Param("page") Page page, @Param("kssj")String kssj,
+                                           @Param("jssj")String jssj,@Param("xmmc")String xmmc);
     List<BillDetail> selectPageBillDetail(Map<String, Object> params);
     //查询住院开单费用
     List<BillDetail> queryInpBillByOrder(Map<String, Object> params);
     List<BillDetail> queryInpBillByPerformBy(Map<String, Object> params);
     List<BillDetail> queryOutpBillByOrder(Map<String, Object> params);
     List<BillDetail> queryOutpByPerformBy(Map<String, Object> params);
-
-    IPage<BillDetail> selectPageBillDetail1(@Param("page") Page page);
 
     // 查询科室手术积分
     IPage<BillDetail> queryDeptOperationScoreByPage(Page page, @Param("kssj")String kssj, @Param("jssj")String jssj,@Param("orderBy")String ksmc,@Param("xmmc")String xmmc);

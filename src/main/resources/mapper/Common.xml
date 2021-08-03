@@ -33,4 +33,9 @@
         select t.dept_code from staff_dict t
         where t.user_name=#{yhm}
     </select>
+    <!-- 费用类别字典 -->
+    <select id="queryAllBillItemClass" resultType="com.hd.imms.entity.common.CodeBean" >
+        select t.class_code as code,t.class_name as name from bill_item_class_dict t
+        order by t.class_code
+    </select>
 </mapper>
