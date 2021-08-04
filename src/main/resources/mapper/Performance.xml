@@ -62,6 +62,32 @@
         </if>
         group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
     </select>
+    <select id="selectPageBillDetailByPerform" resultType="com.hd.imms.entity.performance.BillDetail">
+        select a.dept_name as ordered_by_dept_name,t.item_class,c.class_name,t.item_code,t.item_name,
+        round((t.item_price/9.1),2) as jf,sum(t.amount) as amount,round(sum((t.item_price/9.1)*t.amount),2) as zjf,t.performed_by
+        from inp_bill_detail t
+        left join dept_dict a on t.performed_by=a.dept_code
+        left join bill_item_class_dict c on t.item_class=c.class_code
+        where t.billing_date_time >= to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and t.billing_date_time &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and regexp_like(t.performed_by,'^01\d{4}')
+        <if test="xmmc != null and xmmc != ''">
+            and instr(t.item_name,#{xmmc})>0
+        </if>
+        <if test="ksdms != null and ksdms.length > 0">
+            and t.performed_by in
+            <foreach item="item" index="index" collection="ksdms" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="xmlb != null and xmlb.length > 0">
+            and t.item_class in
+            <foreach item="lbdm" collection="xmlb" open="(" separator="," close=")">
+                #{lbdm}
+            </foreach>
+        </if>
+        group by t.performed_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
+    </select>
     <!-- 住院开单费用 -->
     <select id="queryInpBillByOrder" resultType="com.hd.imms.entity.performance.BillDetail">
         select c.dept_name as ksmc,

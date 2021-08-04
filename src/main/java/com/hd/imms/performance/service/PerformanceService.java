@@ -264,15 +264,19 @@ public class PerformanceService {
         String[] ksdms = obj.getKsdms();
         String[] xmlb = obj.getFylb();
         Page<BillDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
-        IPage<BillDetail> userIPage = performance.selectPageBillDetail(page,kssj, jssj, xmmc, ksdms, xmlb);
-
+        String jffs = obj.getJffs();
+        IPage<BillDetail> userIPage = null;
+        if(StringUtils.equals("1", jffs)){
+            userIPage = performance.selectPageBillDetailByPerform(page,kssj, jssj, xmmc, ksdms, xmlb);
+        }else{
+            userIPage = performance.selectPageBillDetail(page,kssj, jssj, xmmc, ksdms, xmlb);
+        }
         return userIPage;
     }
     public String getUserDept(){
         //查询当前用户所在科室
         String userName = SecurityUtils.getUsername();
         String userDept = "";
-        log.error("getUserDept userName:-___"+ userName);
         DeptScore ret = new DeptScore();
         if(StringUtils.isEmpty(userName) || StringUtils.equals(userName,StringUtils.lowerCase("anonymous"))){
             return userDept;
