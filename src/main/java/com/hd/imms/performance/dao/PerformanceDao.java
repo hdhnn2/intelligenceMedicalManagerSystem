@@ -47,7 +47,7 @@ public class PerformanceDao {
         String lx = obj.getLx();
         int cnt = 0;
         if(StringUtils.equals("ys", lx)){
-            String sql = "update xjx_fz_zd_ptcs t set mzlfz=?,zyrrfz=?,fhxfz=?,hxjf=?,ssfz=?,kfxmfz=? where ksdm=? and lx=?";
+            String sql = "update xjx_fz_zd t set mzlfz=?,zyrrfz=?,fhxfz=?,hxjf=?,ssfz=?,kfxmfz=? where ksdm=? and lx=?";
             Object[ ] args = {obj.getMzlfz(), obj.getZyrrfz(), obj.getFhxfz(), obj.getHxjf(),
                     obj.getSsfz(), obj.getKfxmfz(), obj.getKsdm(), lx};
             cnt = ds1JdbcTemplate.update(sql, args);

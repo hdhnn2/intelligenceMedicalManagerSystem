@@ -257,16 +257,14 @@ public class PerformanceService {
         return page;
     }
     public IPage<BillDetail> selectPageBillDetail(BillDetailQuery obj) {
-        Map<String,Object> params = new HashMap<String,Object>();
         String[] jfrq = obj.getJfrq();
         String kssj = jfrq[0]+" 00:00:00";
         String jssj = jfrq[1]+" 23:59:59";
         String xmmc = obj.getXmmc();
-        if(StringUtils.isNotEmpty(xmmc)){
-            params.put("xmmc", xmmc.trim());
-        }
+        String[] ksdms = obj.getKsdms();
+        String[] xmlb = obj.getFylb();
         Page<BillDetail> page = new Page<>(obj.getCurrent(), obj.getSize());
-        IPage<BillDetail> userIPage = performance.selectPageBillDetail(page,kssj, jssj, xmmc);
+        IPage<BillDetail> userIPage = performance.selectPageBillDetail(page,kssj, jssj, xmmc, ksdms, xmlb);
 
         return userIPage;
     }

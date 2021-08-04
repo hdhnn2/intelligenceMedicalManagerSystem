@@ -20,7 +20,8 @@ public interface Performance {
     Map<String, Object> calMedLabScore(Map<String, Object> params);
     Map<String, Object> calDoctorScoreDetail(Map<String, Object> params);
     IPage<BillDetail> selectPageBillDetail(@Param("page") Page page, @Param("kssj")String kssj,
-                                           @Param("jssj")String jssj,@Param("xmmc")String xmmc);
+                                           @Param("jssj")String jssj,@Param("xmmc")String xmmc,
+             @Param("ksdms")String[] ksdms,@Param("xmlb")String[] xmlb);
     List<BillDetail> selectPageBillDetail(Map<String, Object> params);
     //查询住院开单费用
     List<BillDetail> queryInpBillByOrder(Map<String, Object> params);

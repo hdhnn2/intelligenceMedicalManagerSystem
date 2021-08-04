@@ -19,10 +19,7 @@
     <!-- 部门表 -->
     <select id="queryDeptDict" resultType="com.hd.imms.entity.common.DepartmentDictionary" parameterType="com.hd.imms.entity.common.DepartmentDictionary">
         select t.dept_code,t.dept_name from dept_dict t
-        where t.branch_code='01'
-        and t.internal_or_sergery='2'
-        and t.outp_or_inp &lt; '2'
-        and length(t.dept_code) &gt; 2
+        where regexp_like(t.dept_code,'^01\d{4}|03\d{2}')
         <if test="deptName != null and deptName !=''">
             and t.deptName like concat(concat('%',#{deptName}),'%')
         </if>

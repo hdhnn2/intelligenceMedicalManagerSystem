@@ -15,4 +15,6 @@ public class BillDetailQuery {
     private Integer current;
     private Integer size;
     private String ckmxlx;  //查看明细类型
+    private String[] fylb;
+    private String[] ksdms;
 }

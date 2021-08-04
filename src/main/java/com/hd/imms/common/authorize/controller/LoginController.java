@@ -62,11 +62,12 @@ public class LoginController {
         if(StringUtils.isEmpty(userId)){
             return HttpResult.error(50008,"非法的token");
         }
-        //JSONObject ret = JSON.parseObject("{\"data\":{\"roles\":[\"admin\"],\"introduction\":\"I am a super administrator\",\"avatar\":\"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif\",\"name\":\"Super Admin\"}}");
         JSONObject ret = authorizeService.queryUserRoleById(userId);
         // 查询用户基本信息
         User user = userService.findByUsername(userId);
         ret.put("name", user.getUserName());
+        ret.put("deptCode", user.getDeptCode());
+        ret.put("deptName", user.getDeptName());
         //根据角色查询菜单210721
         JSONArray roles = ret.getJSONArray("roles");
         if(roles.size() > 0){

@@ -48,6 +48,18 @@
         <if test="xmmc != null and xmmc != ''">
             and instr(t.item_name,#{xmmc})>0
         </if>
+        <if test="ksdms != null and ksdms.length > 0">
+            and t.ordered_by in
+            <foreach item="item" index="index" collection="ksdms" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="xmlb != null and xmlb.length > 0">
+            and t.item_class in
+            <foreach item="lbdm" collection="xmlb" open="(" separator="," close=")">
+                #{lbdm}
+            </foreach>
+        </if>
         group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
     </select>
     <!-- 住院开单费用 -->
