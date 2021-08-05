@@ -61,6 +61,32 @@
             </foreach>
         </if>
         group by t.ordered_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
+        union all
+        select a1.dept_name as ordered_by_dept_name,t1.item_class,c1.class_name,t1.item_code,t1.item_name,
+        round((t1.item_price/9.1),2) as jf,sum(t1.amount) as amount,round(sum((t1.item_price/9.1)*t1.amount),2) as zjf,t2.ordered_by_dept as ordered_by
+        from outp_bill_items t1
+        left join outp_order_desc t2 on t1.visit_date=t2.visit_date and t1.visit_no=t2.visit_no and t1.rcpt_no=t2.rcpt_no
+        left join dept_dict a1 on t2.ordered_by_dept=a1.dept_code
+        left join bill_item_class_dict c1 on t1.item_class=c1.class_code
+        where t1.visit_date >= to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and t1.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and regexp_like(t2.ordered_by_dept,'^03\d{2}')
+        <if test="xmmc != null and xmmc != ''">
+            and instr(t1.item_name,#{xmmc})>0
+        </if>
+        <if test="ksdms != null and ksdms.length > 0">
+            and t2.ordered_by_dept in
+            <foreach item="item" index="index" collection="ksdms" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="xmlb != null and xmlb.length > 0">
+            and t1.item_class in
+            <foreach item="lbdm" collection="xmlb" open="(" separator="," close=")">
+                #{lbdm}
+            </foreach>
+        </if>
+        group by t2.ordered_by_dept,a1.dept_name,t1.item_class,c1.class_name,t1.item_code,t1.item_name,t1.item_price
     </select>
     <select id="selectPageBillDetailByPerform" resultType="com.hd.imms.entity.performance.BillDetail">
         select a.dept_name as ordered_by_dept_name,t.item_class,c.class_name,t.item_code,t.item_name,
@@ -87,6 +113,31 @@
             </foreach>
         </if>
         group by t.performed_by,a.dept_name,t.item_class,c.class_name,t.item_code,t.item_name,t.item_price
+        union all
+        select a1.dept_name as ordered_by_dept_name,t1.item_class,c1.class_name,t1.item_code,t1.item_name,
+        round((t1.item_price/9.1),2) as jf,sum(t1.amount) as amount,round(sum((t1.item_price/9.1)*t1.amount),2) as zjf,t1.performed_by
+        from outp_bill_items t1
+        left join dept_dict a1 on t1.performed_by=a1.dept_code
+        left join bill_item_class_dict c1 on t1.item_class=c1.class_code
+        where t1.visit_date >= to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+        and t1.visit_date &lt;= to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+        and regexp_like(t1.performed_by,'^01\d{4}')
+        <if test="xmmc != null and xmmc != ''">
+            and instr(t1.item_name,#{xmmc})>0
+        </if>
+        <if test="ksdms != null and ksdms.length > 0">
+            and t1.performed_by in
+            <foreach item="item" index="index" collection="ksdms" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="xmlb != null and xmlb.length > 0">
+            and t1.item_class in
+            <foreach item="lbdm" collection="xmlb" open="(" separator="," close=")">
+                #{lbdm}
+            </foreach>
+        </if>
+        group by t1.performed_by,a1.dept_name,t1.item_class,c1.class_name,t1.item_code,t1.item_name,t1.item_price
     </select>
     <!-- 住院开单费用 -->
     <select id="queryInpBillByOrder" resultType="com.hd.imms.entity.performance.BillDetail">
