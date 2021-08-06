@@ -6,6 +6,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hd.imms.common.utils.RedisUtils;
 import com.hd.imms.common.utils.SecurityUtils;
 import com.hd.imms.entity.common.CodeBean;
 import com.hd.imms.entity.common.DepartmentDictionary;
@@ -18,6 +19,7 @@ import com.hd.imms.performance.dao.PerformanceDao;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,6 +41,9 @@ public class PerformanceService {
     @Resource
     CommonMapper commonMapper;
 
+    @Autowired
+    private RedisUtils redisUtils;
+
     /**
      * 查询类型所有科室系数
      * @return
@@ -59,8 +64,8 @@ public class PerformanceService {
      * @date 2021-05-12
      * @return
      */
-    public List<DeptVsClinic> queryDeptVsClinicList(){
-        List<DeptVsClinic> list = performance.queryDeptVsClinicList();
+    public List<DeptVsClinic> queryDeptVsClinicList(Map<String, Object> params){
+        List<DeptVsClinic> list = performance.queryDeptVsClinicList(params);
         return list;
     }
     /**
@@ -490,5 +495,15 @@ public class PerformanceService {
      */
     public List<CodeBean> queryAllBillItemClass(){
         return commonMapper.queryAllBillItemClass();
+    }
+    /**
+     * 功能：查询用户门诊缓存
+     * @date 2021-08-05
+     * @return
+     */
+    public List<String> getUserClinicDept(){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<String> list = redisUtils.getUserDept(userName);
+        return list;
     }
 }

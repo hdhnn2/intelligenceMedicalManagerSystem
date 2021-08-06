@@ -68,6 +68,8 @@ public class LoginController {
         ret.put("name", user.getUserName());
         ret.put("deptCode", user.getDeptCode());
         ret.put("deptName", user.getDeptName());
+        // 查询用户门诊科室
+        authorizeService.saveUserDeptRedis(userId, user.getDeptCode());
         //根据角色查询菜单210721
         JSONArray roles = ret.getJSONArray("roles");
         if(roles.size() > 0){

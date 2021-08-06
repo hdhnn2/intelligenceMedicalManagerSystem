@@ -63,7 +63,8 @@ public class PerformanceController {
     @GetMapping(value = "/deptCoefficient/queryDeptVsClinicList")
     public JSONObject queryDeptVsClinicList(HttpServletRequest request) {
         log.error("queryAllDeptCoefficientByType type: ");
-        List<DeptVsClinic> list = performanceService.queryDeptVsClinicList();
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<DeptVsClinic> list = performanceService.queryDeptVsClinicList(params);
         JSONArray ret = (JSONArray) JSON.toJSON(list);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
@@ -191,11 +192,14 @@ public class PerformanceController {
         log.error("queryDeptDict: "+obj.toString());
         List<DepartmentDictionary> list = performanceService.queryDeptDict(obj);
         List<CodeBean> billItemClassList = performanceService.queryAllBillItemClass();
+        // 登录者科室
+        List<String> clinicList = performanceService.getUserClinicDept();
         JSONArray ret = (JSONArray) JSON.toJSON(list);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
         retJSON.put("deptList", list);
         retJSON.put("billItemClassList", billItemClassList);
+        retJSON.put("clinicList", clinicList);
         return retJSON;
     }
 

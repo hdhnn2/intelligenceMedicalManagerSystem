@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Mapper
 public interface Performance {
-    List<DeptVsClinic> queryDeptVsClinicList();
+    List<DeptVsClinic> queryDeptVsClinicList(Map<String, Object> params);
     List<DeptScore> queryDeptScore(DeptScore obj);
     Map<String, Object> calDoctorScore(Map<String, Object> params);
     Map<String, Object> calNurseScore(Map<String, Object> params);

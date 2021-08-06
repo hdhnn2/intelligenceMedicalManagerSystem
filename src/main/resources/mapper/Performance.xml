@@ -8,6 +8,11 @@
         from XJX_ZYKS_VS_MZ t
         left join dept_dict a on t.ksdm=a.dept_code
         left join dept_dict b on t.mzdm=b.dept_code
+        <where>
+        <if test="ksdm != null and ksdm !=''">
+            t.ksdm=#{ksdm}
+        </if>
+        </where>
         order by t.ksdm
     </select>
     <select id="queryDeptScore" resultType="com.hd.imms.entity.performance.DeptScore" parameterType="com.hd.imms.entity.performance.DeptScore">

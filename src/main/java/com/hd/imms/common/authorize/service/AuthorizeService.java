@@ -7,21 +7,26 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hd.imms.common.authorize.bean.Role;
 import com.hd.imms.common.authorize.dao.AuthorizeDao;
+import com.hd.imms.common.utils.RedisUtils;
 import com.hd.imms.entity.authorize.Menu;
 import com.hd.imms.entity.authorize.QueryBean;
 import com.hd.imms.entity.authorize.User;
 import com.hd.imms.entity.authorize.UserRole;
 import com.hd.imms.entity.performance.BillDetail;
+import com.hd.imms.entity.performance.DeptVsClinic;
 import com.hd.imms.entity.performance.ScoreDetail;
 import com.hd.imms.entity.performance.UserQuery;
 import com.hd.imms.mapper.AuthUser;
+import com.hd.imms.performance.service.PerformanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -35,6 +40,12 @@ public class AuthorizeService {
     @Resource
     @Autowired
     AuthUser authUser;
+
+    @Autowired
+    private PerformanceService performanceService;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     public List<Role> queryAllRoles(){
         List<Role> roleList =authorizeDao.queryAllRole();
@@ -149,5 +160,16 @@ public class AuthorizeService {
             userRole = userRoleList.get(0);
         }
         return userRole;
+    }
+
+    /**
+     * 缓存存贮用户科室信息存贮
+     * @param deptCode
+     */
+    public void saveUserDeptRedis(String userName, String deptCode){
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ksdm", deptCode);
+        List<DeptVsClinic> list = performanceService.queryDeptVsClinicList(params);
+        redisUtils.setUserDept(userName, list);
     }
 }
