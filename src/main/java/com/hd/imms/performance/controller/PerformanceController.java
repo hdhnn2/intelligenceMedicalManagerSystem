@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.hd.imms.common.authorize.service.AuthorizeService;
 import com.hd.imms.entity.common.CodeBean;
 import com.hd.imms.entity.common.DepartmentDictionary;
 import com.hd.imms.entity.performance.*;
@@ -12,6 +13,7 @@ import com.hd.imms.performance.service.PerformanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +33,8 @@ import java.util.Map;
 public class PerformanceController {
     @Autowired
     private PerformanceService performanceService;
-
+    @Autowired
+    private AuthorizeService authorizeService;
     /**
      * 查询类型所有科室系数
      */
@@ -328,6 +332,19 @@ public class PerformanceController {
         retJSON.put("code", 200);
         IPage<ScoreDetail> page = performanceService.queryMedicalLabDetail(obj);
         retJSON.put("data", page);
+        return retJSON;
+    }
+    /**
+     * 查询统计数据
+     */
+    @PostMapping(value = "/queryStatisticsData")
+    public JSONObject queryStatisticsData(@RequestBody BillDetailQuery obj, HttpServletRequest request) {
+        String token = request.getHeader("token");
+        log.error("queryStatisticsData token: "+token);
+        String userRole = authorizeService.getCacheUserRoleID(token);
+        JSONObject retJSON = new JSONObject();
+        retJSON.put("code", 200);
+        retJSON.put("data", authorizeService.getCacheUserRoleID(token));
         return retJSON;
     }
 }

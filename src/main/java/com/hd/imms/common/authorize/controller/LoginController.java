@@ -74,6 +74,8 @@ public class LoginController {
         JSONArray roles = ret.getJSONArray("roles");
         if(roles.size() > 0){
             String roleID = roles.getString(0);
+            //角色存入缓存
+            authorizeService.saveUserRoleRedis(token, roleID);
             ret.put("menu", authorizeService.queryMenuByRole(roleID));
         }
         log.error("login info roles: "+ret.toString());

@@ -172,4 +172,16 @@ public class AuthorizeService {
         List<DeptVsClinic> list = performanceService.queryDeptVsClinicList(params);
         redisUtils.setUserDept(userName, list);
     }
+    /**
+     * 缓存存贮用户角色信息
+     */
+    public void saveUserRoleRedis(String token, String roleID){
+        redisUtils.setUserRole(token, roleID);
+    }
+    /**
+     * 获取缓存角色代码
+     */
+    public String getCacheUserRoleID(String token){
+        return redisUtils.getUserRole(token);
+    }
 }
