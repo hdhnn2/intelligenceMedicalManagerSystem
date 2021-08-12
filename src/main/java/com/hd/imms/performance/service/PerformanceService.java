@@ -506,4 +506,46 @@ public class PerformanceService {
         List<String> list = redisUtils.getUserDept(userName);
         return list;
     }
+    /**
+     * 工作量统计
+     *
+     */
+    public  JSONObject queryStatisticsData(String userRoleId){
+        JSONObject ret = new JSONObject();
+        // 根据角色判断统计不同方面
+        Set<String> roleSet = new HashSet<String>();
+        roleSet.add("admin");
+        roleSet.add("003");
+        Map<String, Object> params = new HashMap<>();
+        if(roleSet.contains(userRoleId)){
+            //管理员
+            //xAxis
+            List<BillDetail> monthList = performance.queryStatisticsMoth(params);
+            List<String> retMonthList = new ArrayList<>();
+            if(monthList != null){
+                for(BillDetail billDetail : monthList){
+                    retMonthList.add(billDetail.getRq());
+                }
+            }
+            ret.put("months", retMonthList);
+            params.put("lx", "1");
+            List<BillDetail> list = performance.queryHospitalScoreByAdmin(params);
+            ret.put("ys", list);
+            // 护士
+            params.put("lx", "2");
+            List<BillDetail> nurseList = performance.queryHospitalScoreByAdmin(params);
+            ret.put("hs", nurseList);
+            // 护士
+            params.put("lx", "3");
+            List<BillDetail> medLabList = performance.queryHospitalScoreByAdmin(params);
+            ret.put("yj", medLabList);
+            //科室总收入
+            params.clear();
+            List<BillDetail> totalList = performance.queryDeptTotalScoreByAdmin(params);
+            ret.put("total", totalList);
+        }else {
+            //科室
+        }
+        return ret;
+    }
 }

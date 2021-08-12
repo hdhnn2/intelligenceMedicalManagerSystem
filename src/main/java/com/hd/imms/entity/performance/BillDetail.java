@@ -26,4 +26,9 @@ public class BillDetail {
     private String lx;      //类型
     private Double zfz;
     private Double sl;
+    private Double zjj;
+    private String rq;
+    private String deptName;
+    private String ksdm;
+    private String deptType;
 }

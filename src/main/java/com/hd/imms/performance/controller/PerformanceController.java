@@ -344,7 +344,7 @@ public class PerformanceController {
         String userRole = authorizeService.getCacheUserRoleID(token);
         JSONObject retJSON = new JSONObject();
         retJSON.put("code", 200);
-        retJSON.put("data", authorizeService.getCacheUserRoleID(token));
+        retJSON.put("data", performanceService.queryStatisticsData(userRole));
         return retJSON;
     }
 }
