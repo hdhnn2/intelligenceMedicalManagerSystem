@@ -65,4 +65,5 @@ public interface Performance {
     List<BillDetail> queryHospitalScoreByAdmin(Map<String, Object> params);
     List<BillDetail> queryDeptTotalScoreByAdmin(Map<String, Object> params);
     List<BillDetail> queryStatisticsMoth(Map<String, Object> params);
+    List<BillDetail> queryStatisticsByDeptType(Map<String, Object> params);
 }

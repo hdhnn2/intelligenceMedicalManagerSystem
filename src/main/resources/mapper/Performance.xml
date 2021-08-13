@@ -723,9 +723,12 @@
         round(sum(nvl(t.mzljj,0)+nvl(t.fhxjj,0)+nvl(t.hxjfjj,0)+nvl(t.ssjj,0)+nvl(t.kfxmjj,0)+t.hxjffz*nvl(t.qtxm_zx,0))) as zjj,a.dept_type
         from XJX_DEPT_SCORE t
         left join dept_dict a on t.ksdm=a.dept_code
-        where to_char(sysdate,'yyyy')=substr(t.rq, 1, 4) and t.ksdm not in ('013503','0333','0334')
+        where to_char(sysdate,'yyyy')=substr(t.rq, 1, 4) and t.ksdm not in ('013503','0333','0334','012303')
         <if test="lx != null and lx != ''">
-            and t.lx=#{lx}
+            and t.lx in
+            <foreach item="item" index="index" collection="lx" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         group by t.rq,a.dept_type,t.ksdm,a.dept_name
         <if test="lx != null and lx != ''">
@@ -738,15 +741,23 @@
         round(sum(nvl(t.mzljj,0)+nvl(t.fhxjj,0)+nvl(t.hxjfjj,0)+nvl(t.ssjj,0)+nvl(t.kfxmjj,0)+t.hxjffz*nvl(t.qtxm_zx,0))) as zjj
         from XJX_DEPT_SCORE t
         left join dept_dict a on t.ksdm=a.dept_code
-        where t.rq='2021-07' and t.ksdm not in ('013503','0333','0334')
+        where t.rq=to_char(add_months(sysdate,-1),'yyyy-mm') and t.ksdm not in ('013503','0333','0334','012303')
         group by t.rq,t.ksdm,a.dept_name
         order by t.ksdm
     </select>
     <select id="queryStatisticsMoth" resultType="com.hd.imms.entity.performance.BillDetail">
         select t.rq
         from XJX_DEPT_SCORE t
-        where to_char(sysdate,'yyyy')=substr(t.rq, 1, 4) and t.ksdm not in ('013503','0333','0334')
+        where to_char(sysdate,'yyyy')=substr(t.rq, 1, 4) and t.ksdm not in ('013503','0333','0334','012303')
         group by t.rq
         order by t.rq
+    </select>
+    <select id="queryStatisticsByDeptType" resultType="com.hd.imms.entity.performance.BillDetail">
+        select t.rq,a.dept_type,
+        round(sum(nvl(t.mzljj,0)+nvl(t.fhxjj,0)+nvl(t.hxjfjj,0)+nvl(t.ssjj,0)+nvl(t.kfxmjj,0)+t.hxjffz*nvl(t.qtxm_zx,0))) as zjj
+        from XJX_DEPT_SCORE t
+        left join dept_dict a on t.ksdm=a.dept_code
+        where t.rq=to_char(add_months(sysdate,-1),'yyyy-mm') and t.ksdm not in ('013503','0333','0334','012303')
+        group by t.rq,a.dept_type
     </select>
 </mapper>

@@ -528,15 +528,19 @@ public class PerformanceService {
                 }
             }
             ret.put("months", retMonthList);
-            params.put("lx", "1");
+            String[] lx = new String[]{"1", "2"};
+            params.put("lx", lx);
             List<BillDetail> list = performance.queryHospitalScoreByAdmin(params);
-            ret.put("ys", list);
-            // 护士
+            ret.put("lastMonth", list);
+            //按科室分类统计最近一个月工作量
+            List<BillDetail> deptTypeList = performance.queryStatisticsByDeptType(params);
+            ret.put("deptTypeList", deptTypeList);
+/*            // 护士
             params.put("lx", "2");
             List<BillDetail> nurseList = performance.queryHospitalScoreByAdmin(params);
-            ret.put("hs", nurseList);
+            ret.put("hs", nurseList);*/
             // 护士
-            params.put("lx", "3");
+            params.put("lx", new String[]{"3"});
             List<BillDetail> medLabList = performance.queryHospitalScoreByAdmin(params);
             ret.put("yj", medLabList);
             //科室总收入
